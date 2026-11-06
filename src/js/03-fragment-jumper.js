@@ -5,6 +5,7 @@
   if (!article) return
   var toolbar = document.querySelector('.toolbar')
   var supportsScrollToOptions = 'scrollTo' in document.documentElement
+  if (!toolbar) return
 
   function decodeFragment (hash) {
     return hash && (~hash.indexOf('%') ? decodeURIComponent(hash) : hash).slice(1)

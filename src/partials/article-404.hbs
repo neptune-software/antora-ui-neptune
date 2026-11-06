@@ -1,10 +1,17 @@
-<article class="doc">
-<h1 class="page">{{{or page.title 'Page Not Found'}}}</h1>
-<div class="paragraph">
-<p>The page you&#8217;re looking for does not exist. It may have been moved. You can{{#with site.homeUrl}} return to the <a href="{{{relativize this}}}">start page</a>, or{{/with}} follow one of the links in the navigation to the left.</p>
-</div>
-<div class="paragraph">
-<p>If you arrived on this page by clicking on a link, please notify the owner of the site that the link is broken.
-If you typed the URL of this page manually, please double check that you entered the address correctly.</p>
-</div>
-</article>
+{{!-- No nav or toolbar; Go Back is wired in js/11-error-page.js. --}}
+<main class="error-page">
+  {{!-- Logo line pattern, inline so imagemin can't strip a <use> target; shown in dark mode only. --}}
+  <svg class="error-page-pattern" viewBox="200 200 760 380" aria-hidden="true" fill="none" stroke="#FF9E33" stroke-opacity=".35">
+    <path vector-effect="non-scaling-stroke" stroke-width="1.5" d="M338.7,243.1c-24.9,9.8-47.9,25.9-66.4,48.3c-25.5,30.8-38.1,68.8-38.1,106.6v0c0,37.8,12.6,75.8,38.1,106.6c18.5,22.4,41.4,38.4,66.4,48.3c75.6,29.9,161.7-2.1,202.4-72.5l47.5-82.4L541,315.7C500.4,245.3,414.3,213.3,338.7,243.1z"/>
+    <polygon vector-effect="non-scaling-stroke" stroke-width="1.5" points="851.6,246.1 676.3,246.1 588.6,398 676.3,549.9 763.9,398 939.3,398"/>
+  </svg>
+  <div class="error-page-inner">
+    <div class="error-page-pre">Error 404</div>
+    <h1 class="error-page-title">This Page Has Moved. <em>Let&#8217;s Find It.</em></h1>
+    <p class="error-page-text">The page you are looking for doesn&#8217;t exist or was moved somewhere else. Don&#8217;t worry, let&#8217;s guide you back.</p>
+    <div class="error-page-actions">
+      <a class="error-page-button" href="{{{siteRootPath}}}/neptune-dxp/index.html">Home</a>
+      <a class="error-page-button error-page-back" href="{{{siteRootPath}}}/neptune-dxp/index.html">Go Back</a>
+    </div>
+  </div>
+</main>

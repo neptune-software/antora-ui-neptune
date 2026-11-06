@@ -1,7 +1,12 @@
 <article class="doc">
+{{> print-header}}
 {{#with page.title}}
 <h1 class="page">{{{this}}}</h1>
 {{/with}}
 {{{page.contents}}}
 {{> pagination}}
+{{!-- No feedback on the site home and on each component version's start page (index). --}}
+{{#unless (or (eq page.url site.homeUrl) (eq page.url page.componentVersion.url))}}
+{{> page-feedback}}
+{{/unless}}
 </article>

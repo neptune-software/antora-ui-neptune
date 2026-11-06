@@ -1,0 +1,4 @@
+nav.pagination a::after,
+nav.pagination a::before {
+  content: unset !important;
+}

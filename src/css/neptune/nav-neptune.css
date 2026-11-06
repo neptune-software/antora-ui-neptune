@@ -1,0 +1,110 @@
+a.navbar-item {
+  font-weight: bold;
+  transition: all 0.2s ease-out;
+}
+
+.navbar-menu {
+  justify-content: flex-end;
+}
+
+.navbar-menu a.navbar-item:hover {
+  background-color: transparent !important;
+}
+
+.navbar-end {
+  margin-left: 0;
+}
+
+.nav-menu {
+  color: #38112a;
+}
+
+.nav-menu h3.title {
+  color: #38112a;
+}
+
+.nav-menu ul li .nav-list li.nav-item:not(.is-active) ul {
+  display: none;
+}
+
+li.is-current-page > a.nav-link {
+  font-weight: bold !important;
+  color: #38112a;
+}
+
+nav.nav-menu > ul > li > .nav-item-toggle {
+  display: none;
+}
+
+div aside div div nav h3 a {
+  font-weight: bold;
+  color: #3811a2;
+}
+
+/* neptune-dxp has no side nav: drop the column so the toolbar spans the page box. */
+div[data-component="neptune-dxp"] {
+  display: none;
+}
+
+.navbar .search-toggle-btn {
+  display: none;
+}
+
+@media screen and (max-width: 1023.5px) {
+  .searchbar {
+    display: none;
+  }
+
+  .navbar-brand {
+    width: auto;
+  }
+
+  .navbar-menu {
+    background: var(--nds-header-bg);
+  }
+
+  .navbar-brand .navbar-item.nds-brand {
+    flex: 1;
+  }
+
+  .navbar .search-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--nds-header-fg);
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-right: 0.25rem;
+  }
+}
+
+.searchbar {
+  justify-content: center;
+  flex: auto;
+}
+
+input#searchbar {
+  background-position: 173px;
+}
+
+.navbar-item {
+  color: var(--nds-header-fg);
+  padding: 0.5rem 0.5rem;
+}
+
+.navbar-burger span {
+  background-color: var(--nds-header-fg);
+}
+
+.navbar .button {
+  background: transparent;
+  border: none;
+}
+
+@media screen and (min-width: 769px) {
+  .nav-container {
+    width: 14rem;
+  }
+}

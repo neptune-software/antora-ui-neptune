@@ -1,0 +1,18 @@
+/* Asciidoctor Tabs; base styles come from @asciidoctor/tabs, imported in site.css */
+
+html[data-theme^="dark"] .tablist > ul li,
+html[data-theme^="dark"] .tabpanel {
+  border-color: var(--dark-border);
+}
+
+html[data-theme^="dark"] .tablist > ul li,
+html[data-theme^="dark"] .tabs.is-loading .tablist li:first-child::after,
+html[data-theme^="dark"] .tabs:not(.is-loading) .tablist li.is-selected::after,
+html[data-theme^="dark"] .tabpanel {
+  background-color: var(--dark-page-bg);
+}
+
+html[data-theme^="dark"] .tabs.is-loading .tablist li:not(:first-child),
+html[data-theme^="dark"] .tabs:not(.is-loading) .tablist li:not(.is-selected) {
+  background-color: var(--dark-panel-bg);
+}

@@ -1,0 +1,11 @@
+<div class="print-header print-only">
+  <div class="print-header-brand">{{site.title}}</div>
+  <div class="print-header-meta">
+    {{#with page.componentVersion}}
+    {{!-- unversioned components report 'default' as their display version --}}
+    <span>{{{./title}}}{{#unless (eq ./displayVersion 'default')}}{{#with ./displayVersion}} &middot; {{this}}{{/with}}{{/unless}}</span>
+    {{/with}}
+    <span class="print-header-url"></span>
+    <span class="print-header-date"></span>
+  </div>
+</div>

@@ -1,5 +1,9 @@
 @page {
-  margin: 0.5in;
+  margin: 0.6in 0.55in;
+}
+
+.print-only {
+  display: none;
 }
 
 @media print {
@@ -11,15 +15,47 @@
     font-size: var(--body-font-size--print);
   }
 
-  a {
-    color: inherit !important;
+  .header,
+  .navbar,
+  .nav-container,
+  .toolbar,
+  aside.toc,
+  nav.pagination,
+  nav.breadcrumbs,
+  footer.footer {
+    display: none !important;
+  }
+
+  body {
+    padding-top: 0;
+  }
+
+  .doc {
+    color: inherit;
+    margin: 0;
+    max-width: none;
+    padding: 0;
+  }
+
+  .doc > h1.page {
+    margin-top: 0;
+  }
+
+  /* External link targets are spelled out: paper cannot follow them. */
+  .doc a {
+    color: var(--link-font-color);
     text-decoration: underline;
   }
 
-  a.bare,
-  a[href^="#"],
-  a[href^="mailto:"] {
-    text-decoration: none;
+  .doc a[href^="http"]:not(.bare)::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  .doc a[href^="http"] .image::after,
+  .doc .image a[href^="http"]::after {
+    content: none;
   }
 
   tr,
@@ -29,6 +65,27 @@
     page-break-inside: avoid;
   }
 
+  .doc .admonitionblock,
+  .doc .imageblock,
+  .doc figure {
+    page-break-inside: avoid;
+  }
+
+  .doc h1,
+  .doc h2,
+  .doc h3,
+  .doc h4,
+  .doc h5,
+  .doc h6 {
+    page-break-after: avoid;
+  }
+
+  .doc p,
+  .doc li {
+    orphans: 3;
+    widows: 3;
+  }
+
   thead {
     display: table-header-group;
   }
@@ -36,35 +93,7 @@
   pre {
     hyphens: none;
     white-space: pre-wrap;
-  }
-
-  body {
-    padding-top: 2rem;
-  }
-
-  .navbar {
-    background: none;
-    color: inherit;
-    position: absolute;
-  }
-
-  .navbar * {
-    color: inherit !important;
-  }
-
-  .navbar > :not(.navbar-brand),
-  .nav-container,
-  .toolbar,
-  aside.toc,
-  nav.pagination {
-    display: none;
-  }
-
-  .doc {
-    color: inherit;
-    margin: auto;
-    max-width: none;
-    padding-bottom: 2rem;
+    word-wrap: break-word;
   }
 
   .doc .admonitionblock td.icon {
@@ -75,14 +104,80 @@
     display: block;
   }
 
-  footer.footer {
-    background: none;
-    border-top: 1px solid var(--panel-border-color);
-    color: var(--quote-attribution-font-color);
-    padding: 0.25rem 0.5rem 0;
+  /* Chrome drops background fills unless the reader ticks "Background graphics";
+     keep the ones that carry meaning. */
+  .doc .admonitionblock,
+  .doc .admonitionblock td.content,
+  .doc table.tableblock th,
+  .doc .listingblock pre,
+  .doc .literalblock pre {
+    -webkit-print-color-adjust: exact;
+    /* stylelint-disable-next-line property-no-unknown */
+    print-color-adjust: exact;
   }
 
-  .footer * {
-    color: inherit;
+  .doc .admonitionblock td.content {
+    background-color: #fff1e7;
+    border: 0;
+    border-left: 3px solid #38112a;
+    border-radius: 0 5px 5px 0;
+    padding-top: 2.1rem;
+  }
+
+  /* Pin the label inside the box on paper; its color still marks the admonition type. */
+  .doc .admonitionblock .icon {
+    transform: none;
+    top: 0.6rem;
+    left: 0.85rem;
+  }
+
+  .doc table.tableblock thead th {
+    background-color: #38112a;
+    border-color: #38112a;
+    color: #fff;
+  }
+
+  .doc table.tableblock,
+  .doc table.tableblock td,
+  .doc table.tableblock th {
+    border-color: #dfddd2;
+  }
+
+  .doc .listingblock pre,
+  .doc .literalblock pre {
+    background-color: #f7f6f2;
+    border: 1px solid #dfddd2;
+    border-radius: 4px;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  .print-header {
+    border-bottom: 2px solid #38112a;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .print-header-brand {
+    color: #38112a;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .print-header-meta {
+    color: var(--quote-attribution-font-color);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.7rem;
+    gap: 0 1rem;
+    margin-top: 0.15rem;
+  }
+
+  .print-header-url {
+    word-break: break-all;
   }
 }

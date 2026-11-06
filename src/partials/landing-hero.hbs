@@ -1,0 +1,46 @@
+{{!-- Keeps id="searchbar" and id="search-submit-btn" so the search script binds to it.
+     Start Here links use /latest/ so a version bump needs no change here. --}}
+<section class="nds-hero">
+  <div class="nds-glow nds-hero__glow" aria-hidden="true"></div>
+  <div class="nds-hero__main">
+    <span class="nds-eyebrow">Neptune DXP Documentation</span>
+    <h1 class="nds-hero__title">Your Hub for<br>Neptune DXP<br><em class="nds-payoff">Documentation.</em></h1>
+    <p class="nds-hero__subtitle">Explore Neptune across module documentation sets and versions</p>
+    <div class="nds-hero__search searchbar-wrapper">
+      <svg class="nds-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="searchbar" placeholder="Search the docs" autocomplete="off" aria-label="Search the docs">
+      <button class="search-submit-btn" id="search-submit-btn" aria-label="Search">
+        <svg class="nds-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <nav class="nds-start" aria-label="Start here">
+    <span class="nds-eyebrow">Start Here</span>
+    <a class="nds-start__item" href="{{{siteRootPath}}}/neptune-dxp-evaluation-guide/index.html">
+      <svg class="nds-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>
+      <span><strong>Evaluation Guide</strong><small>Architecture, editions, security, and competitive context in one structured walkthrough.</small></span>
+    </a>
+    <a class="nds-start__item" href="{{{siteRootPath}}}/neptune-dxp-release-notes/index.html">
+      <svg class="nds-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>
+      <span><strong>Release Notes</strong><small>What changed, across Neptune modules</small></span>
+    </a>
+    <div class="nds-start__item">
+      <svg class="nds-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <span><strong>Installation</strong>
+        <span class="nds-pills">
+          <a class="version-pill" href="{{{siteRootPath}}}/neptune-dxp-open-edition/latest/installation-guide/installation.html">Open Edition</a>
+          <a class="version-pill" href="{{{siteRootPath}}}/neptune-sap-edition/latest/installation-guide/overview.html">SAP Edition</a>
+        </span>
+      </span>
+    </div>
+    <div class="nds-start__item">
+      <svg class="nds-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6M5 21h14"/></svg>
+      <span><strong>Upgrade</strong>
+        <span class="nds-pills">
+          <a class="version-pill" href="{{{siteRootPath}}}/neptune-dxp-open-edition/latest/upgrade/intro.html">Open Edition</a>
+        </span>
+      </span>
+    </div>
+  </nav>
+</section>

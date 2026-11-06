@@ -5,7 +5,8 @@
 
   var navContainer = document.querySelector('.nav-container')
   var navToggle = document.querySelector('.nav-toggle')
-  if (!navContainer && (!navToggle || (navToggle.hidden = true))) return
+  // absent on the 404 layout
+  if (!navContainer || !navToggle) return
   var nav = navContainer.querySelector('.nav')
   var navMenuToggle = navContainer.querySelector('.nav-menu-toggle')
 
@@ -14,7 +15,6 @@
 
   var menuPanel = navContainer.querySelector('[data-panel=menu]')
   if (!menuPanel) return
-  var explorePanel = navContainer.querySelector('[data-panel=explore]')
 
   var currentPageItem = menuPanel.querySelector('.is-current-page')
   var originalPageItem = currentPageItem
@@ -48,15 +48,6 @@
       } else {
         menuPanel.scrollTop = 0
       }
-    })
-  }
-
-  if (explorePanel) {
-    explorePanel.querySelector('.context').addEventListener('click', function () {
-      // NOTE logic assumes there are only two panels
-      find(nav, '[data-panel]').forEach(function (panel) {
-        panel.classList.toggle('is-active')
-      })
     })
   }
 

@@ -3,5 +3,7 @@
   "rules": {
     "comment-empty-line-before": null,
     "no-descending-specificity": null,
+    "at-rule-no-unknown": [true, { "ignoreAtRules": ["property"] }],
+    "property-no-unknown": [true, { "ignoreProperties": ["syntax", "initial-value", "inherits"] }]
   }
 }

@@ -122,15 +122,14 @@
   --footer-font-color: var(--color-gray-70);
   --footer-link-font-color: var(--color-jet-80);
   /* dimensions and positioning */
-  --navbar-height: calc(63 / var(--rem-base) * 1rem);
-  --toolbar-height: calc(45 / var(--rem-base) * 1rem);
+  --navbar-height: calc(68 / var(--rem-base) * 1rem); /* 2026 header is 68px (neptune-2026-header-footer.css) */
+  --toolbar-height: calc(56 / var(--rem-base) * 1rem);
   --drawer-height: var(--toolbar-height);
   --body-top: var(--navbar-height);
   --body-min-height: calc(100vh - var(--body-top));
   --nav-height: calc(var(--body-min-height) - var(--toolbar-height));
   --nav-height--desktop: var(--body-min-height);
-  --nav-panel-menu-height: calc(100% - var(--drawer-height));
-  --nav-panel-explore-height: calc(50% + var(--drawer-height));
+  --nav-panel-menu-height: 100%;
   --nav-width: calc(270 / var(--rem-base) * 1rem);
   --toc-top: calc(var(--body-top) + var(--toolbar-height));
   --toc-height: calc(100vh - var(--toc-top) - 2.5rem);

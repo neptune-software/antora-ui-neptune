@@ -18,3 +18,6 @@
     {{#with (or antoraVersion site.antoraVersion)}}
     <meta name="generator" content="Antora {{{this}}}">
     {{/with}}
+	{{#with page.attributes.robot-index}}
+    <meta name="robots" content="{{this}}">
+    {{/with}}

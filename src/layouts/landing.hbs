@@ -1,0 +1,18 @@
+{{!-- Enable with :page-layout: landing. --}}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+{{> head defaultPageTitle='Neptune DXP Documentation'}}
+  </head>
+  <body class="landing">
+{{> gtm-frame}}
+{{> header}}
+    <main class="nds-landing">
+{{> landing-hero}}
+      <div class="nds-catalog">
+{{{page.contents}}}
+      </div>
+    </main>
+{{> footer}}
+  </body>
+</html>

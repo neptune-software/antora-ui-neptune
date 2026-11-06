@@ -1,0 +1,6 @@
+/* Font stacks written out (same as --nds-font/--nds-font-mono): :root vars are inlined at build. */
+:root {
+  --body-font-family: arial, helvetica, sans-serif;
+  --monospace-font-family: ui-monospace, sfmono-regular, menlo, consolas, "Liberation Mono", monospace;
+  --table-border-color: var(--color-smoke-90);
+}

@@ -1,0 +1,582 @@
+body.article .body,
+body.article main,
+body.article .doc {
+  background: var(--nds-bg);
+  color: var(--nds-text);
+}
+
+.nav-container .nav,
+.nav-panel-menu {
+  background: var(--nds-sidebar-bg);
+  border-right: 1px solid var(--nds-hair);
+}
+
+.nav-menu .nav-link,
+.nav-menu .nav-text { color: var(--nds-text-2); }
+
+.nav-menu .nav-item[data-depth="0"] > .nav-link,
+.nav-menu .nav-item[data-depth="0"] > .nav-text,
+.nav-menu .nav-item[data-depth="1"] > .nav-link,
+.nav-menu .nav-item[data-depth="1"] > .nav-text { color: var(--nds-text); }
+
+.nav-menu .nav-item.is-current-page > .nav-link {
+  display: block;
+  color: var(--nds-nav-active);
+  background: var(--nds-nav-active-bg);
+  font-weight: 700;
+  border-radius: var(--nds-radius-tag);
+  padding: 5px 10px;
+  margin-left: -10px;
+}
+
+/* 1.35em = --nav-line-height, the width of the expand caret. */
+.nav-menu .nav-item.is-current-page > .nav-item-toggle + .nav-link {
+  margin-left: calc(-1.35em - 4px);
+  padding-left: calc(1.35em + 4px);
+}
+
+.nav-menu .nav-item.is-current-page > .nav-item-toggle {
+  margin-top: calc(5px - 0.05em);
+}
+
+.toolbar {
+  background: var(--nds-bg);
+  border-bottom: 1px solid var(--nds-hair);
+  color: var(--nds-text-2);
+}
+
+/* Keep the last toolbar control (version selector, or Print without versions) off the right glow. */
+.toolbar > :last-child {
+  margin-right: 24px;
+}
+
+html:not([data-theme^="dark"]) body.article .body {
+  box-shadow: -16px 0 40px -16px rgba(178, 150, 255, 0.32), 16px 0 40px -16px rgba(178, 150, 255, 0.22);
+}
+
+html[data-theme^="dark"] body.article .body {
+  box-shadow: -16px 0 40px -16px rgba(110, 87, 116, 0.35), 16px 0 40px -16px rgba(110, 87, 116, 0.35);
+}
+
+html:not([data-theme^="dark"]) .toolbar {
+  background: var(--nds-sidebar-bg);
+}
+
+.toolbar .breadcrumbs a { color: var(--nds-text-2); }
+.toolbar .breadcrumbs li:last-child { color: var(--nds-text); }
+
+/* background-color only: the version toggle's chevron is a background-image. */
+.page-versions .version-menu-toggle,
+.page-print .print-button {
+  border: 1px solid var(--nds-input-border);
+  border-radius: var(--nds-radius-pill);
+  color: var(--nds-text);
+  background-color: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.page-print .print-button { padding: 6px 12px; }
+
+.page-versions .version-menu-toggle {
+  padding: 6px 28px 6px 12px;
+  background-position: right 12px top 50%;
+}
+
+.page-versions .version-menu-toggle:hover,
+.page-versions .version-menu-toggle:focus-visible,
+.page-print .print-button:hover,
+.page-print .print-button:focus-visible {
+  color: var(--nds-text);
+  border-color: var(--nds-text);
+  background-color: var(--nds-pill-bg-hover);
+  opacity: 1;
+}
+
+.page-versions.is-active .version-menu-toggle,
+html[data-theme^="dark"] .page-versions.is-active .version-menu-toggle {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+/* vars.css --page-version-menu-background is inlined as light grey at build time, so set the menu colors here. */
+.page-versions .version-menu {
+  background: var(--nds-surface);
+  border: 1px solid var(--nds-surface-border);
+  border-radius: var(--nds-radius-tag);
+  box-shadow: 0 4px 16px rgba(31, 10, 24, 0.18);
+}
+
+.page-versions .version {
+  color: var(--nds-text);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.page-versions .version:hover { opacity: 0.75; }
+
+.page-versions .version.is-missing {
+  color: var(--nds-muted);
+  font-weight: 400;
+}
+
+.toc .toc-menu h3 {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nds-text);
+}
+
+.toc .toc-menu a {
+  color: var(--nds-text-2);
+  border-left: 2px solid var(--nds-hair);
+  padding-left: 10px;
+}
+
+.toc .toc-menu a.is-active {
+  color: var(--nds-text);
+  font-weight: 700;
+  border-left-color: var(--nds-orange);
+}
+
+.doc {
+  color: var(--nds-text);
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+
+.doc h1.page {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--nds-heading);
+}
+
+.doc h2,
+.doc h3,
+.doc h4 {
+  color: var(--nds-heading);
+  font-weight: 700;
+}
+
+.doc .sect1 > h2 {
+  font-size: 23px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--nds-hair);
+}
+
+.doc p,
+.doc li { color: var(--nds-text); }
+
+.doc a { color: var(--nds-doc-link); }
+
+/* The mobile TOC is embedded in .doc; keep it out of the body link style. */
+.doc .toc.embedded a {
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.doc :not(pre) > code {
+  font-family: var(--nds-font-mono);
+  font-size: 0.9em;
+  background: var(--nds-code-bg);
+  border: 1px solid var(--nds-hair);
+  border-radius: var(--nds-radius-tag);
+  padding: 1px 6px;
+  color: var(--nds-text);
+}
+
+.doc kbd {
+  font: 700 12px var(--nds-font);
+  border: 1px solid var(--nds-hair);
+  border-bottom-width: 2px;
+  border-radius: var(--nds-radius-tag);
+  padding: 1px 7px;
+  background: var(--nds-kbd-bg);
+  color: var(--nds-text);
+  box-shadow: none;
+}
+
+.doc .admonitionblock > table {
+  width: 100%;
+  border-collapse: separate;
+  border-radius: var(--nds-radius-box);
+  border: 1.5px solid transparent;
+  background: var(--nds-adm-note);
+}
+
+.doc .admonitionblock td.icon {
+  box-sizing: content-box;
+  width: 22px;
+  padding: 14px 0 14px 18px;
+  vertical-align: top;
+}
+
+/* [class] lifts specificity over the default UI's per-type .icon badge rules in doc.css. */
+.doc .admonitionblock[class] td.icon {
+  position: static;
+  transform: none;
+  height: auto;
+  border-radius: 0;
+  background: none;
+}
+
+.doc .admonitionblock td.icon i,
+.doc .admonitionblock td.icon .title { display: none; }
+
+.doc .admonitionblock td.icon::before {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 22px;
+  background: var(--nds-adm-icon);
+  -webkit-mask: var(--nds-adm-mask) center / contain no-repeat;
+  mask: var(--nds-adm-mask) center / contain no-repeat;
+}
+
+.doc .admonitionblock td.content {
+  background: transparent;
+  padding: 14px 32px 14px 12px;
+  color: var(--nds-text);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.doc .admonitionblock td.content::before {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.doc .admonitionblock.note { --nds-adm-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E"); }
+.doc .admonitionblock.tip { --nds-adm-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E"); }
+.doc .admonitionblock.important { --nds-adm-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath d='m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'/%3E%3C/svg%3E"); }
+.doc .admonitionblock.warning { --nds-adm-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4 2.5 20h19z'/%3E%3Cpath d='M12 10v4M12 17h.01'/%3E%3C/svg%3E"); }
+.doc .admonitionblock.caution { --nds-adm-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 3h8l5 5v8l-5 5H8l-5-5V8z'/%3E%3Cpath d='M12 8v5M12 16h.01'/%3E%3C/svg%3E"); }
+
+.doc .admonitionblock.note td.content::before { content: "Note"; }
+.doc .admonitionblock.tip td.content::before { content: "Tip"; }
+.doc .admonitionblock.important td.content::before { content: "Important"; }
+.doc .admonitionblock.warning td.content::before { content: "Warning"; }
+.doc .admonitionblock.caution td.content::before { content: "Caution"; }
+
+.doc .admonitionblock.tip > table { background: var(--nds-adm-tip); }
+
+.doc .admonitionblock.important > table {
+  background: var(--nds-adm-important);
+  border-color: var(--nds-purple);
+}
+
+.doc .admonitionblock.warning > table {
+  background: var(--nds-adm-warning);
+  border-color: rgba(255, 158, 51, 0.55);
+}
+
+.doc .admonitionblock.caution > table {
+  background: var(--nds-adm-caution);
+  border: 2px solid var(--nds-orange);
+}
+
+.doc .admonitionblock.warning td.icon::before,
+.doc .admonitionblock.caution td.icon::before { background: var(--nds-adm-icon-warn); }
+
+.doc .admonitionblock td.content > .title {
+  color: var(--nds-text);
+  font-style: normal;
+  font-weight: 700;
+  margin: 10px 0;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--nds-hair);
+}
+
+html:not([data-theme^="dark"]) .doc .admonitionblock :not(pre) > code { background: var(--nds-surface); }
+
+/* No overflow: hidden on .content: it clipped the "Copied!" toast; pre takes the rounded corners instead. */
+.doc .listingblock .content {
+  border: 1px solid var(--nds-hair);
+  border-radius: var(--nds-radius-box);
+}
+
+.doc .listingblock pre,
+.doc .listingblock pre.highlight > code {
+  background: var(--nds-code-bg);
+  color: var(--nds-text);
+  font: 13.5px/1.6 var(--nds-font-mono);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.doc .listingblock .content > pre {
+  border-radius: calc(var(--nds-radius-box) - 1px);
+}
+
+.doc .listingblock pre.highlight > code { background: transparent; }
+
+.doc .source-toolbox .copy-toast {
+  z-index: 1;
+  background-color: var(--nds-selected-bg);
+  color: var(--nds-selected-fg);
+  border-radius: var(--nds-radius-tag);
+  font-family: var(--nds-font);
+  font-weight: 700;
+}
+
+.doc .source-toolbox .copy-toast::after {
+  border-left-color: var(--nds-selected-bg);
+}
+
+.doc .listingblock > .title {
+  color: var(--nds-text);
+  font-weight: 700;
+}
+
+.doc .tableblock caption {
+  color: var(--nds-text);
+  font-style: normal;
+  font-weight: 700;
+}
+.doc .source-toolbox { color: var(--nds-text-2); }
+
+.doc .source-toolbox .source-lang {
+  font-size: 12px;
+  text-transform: none;
+}
+
+.doc .source-toolbox .copy-button {
+  color: var(--nds-text);
+  font-weight: 700;
+}
+
+/* Covers every highlight.css token so none of its default colors show through. */
+.doc .hljs-keyword,
+.doc .hljs-built_in,
+.doc .hljs-builtin-name,
+.doc .hljs-literal,
+.doc .hljs-selector-tag,
+.doc .hljs-meta-keyword,
+.doc .hljs-type,
+.doc .hljs-section {
+  color: var(--nds-syn-keyword);
+  font-weight: 700;
+}
+
+.doc .hljs-string,
+.doc .hljs-doctag,
+.doc .hljs-attr,
+.doc .hljs-tag .hljs-attr,
+.doc .hljs-attribute,
+.doc .hljs-template-variable,
+.doc .hljs-selector-attr,
+.doc .hljs-selector-id,
+.doc .hljs-selector-class,
+.doc .hljs-regexp,
+.doc .hljs-link,
+.doc .hljs-addition { color: var(--nds-syn-string); }
+
+.doc .hljs-comment,
+.doc .hljs-quote,
+.doc .hljs-meta {
+  color: var(--nds-syn-comment);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.doc .hljs-number,
+.doc .hljs-symbol,
+.doc .hljs-bullet,
+.doc .hljs-variable,
+.doc .hljs-deletion { color: var(--nds-syn-number); }
+
+.doc .hljs-title,
+.doc .hljs-class .hljs-title,
+.doc .hljs-name,
+.doc .hljs-function,
+.doc .hljs-params,
+.doc .hljs-subst,
+.doc .hljs-tag {
+  color: var(--nds-text);
+  font-weight: 400;
+}
+
+.doc .hljs-addition,
+.doc .hljs-deletion { background: none; }
+
+.doc table.tableblock {
+  border-collapse: collapse;
+  border: 0;
+}
+
+.doc table.tableblock thead th.tableblock {
+  background: var(--nds-th-bg);
+  color: var(--nds-th-fg);
+  font-weight: 700;
+  border: 0;
+}
+
+.doc table.tableblock td.tableblock,
+.doc table.tableblock th.tableblock {
+  border: 0;
+  border-bottom: 1px solid var(--nds-hair);
+  padding: 9px 12px;
+}
+.doc table.tableblock tbody tr:nth-child(odd) > * { background: var(--nds-row-1); }
+.doc table.tableblock tbody tr:nth-child(even) > * { background: var(--nds-row-2); }
+.doc table.tableblock p.tableblock { color: var(--nds-text); }
+
+html:not([data-theme^="dark"]) .doc table.tableblock tbody :not(pre) > code { background: #f3eeff; }
+
+.doc .tabs .tablist > ul {
+  display: flex;
+  gap: 4px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.doc .tabs .tablist > ul li {
+  padding: 9px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--nds-text-2);
+  background: var(--nds-tab);
+  border: 0;
+  border-radius: var(--nds-radius-tag) var(--nds-radius-tag) 0 0;
+  position: relative;
+}
+.doc .tabs .tablist > ul li::after { display: none; }
+
+.doc .tabs:not(.is-loading) .tablist li.is-selected {
+  color: var(--nds-text);
+  background: var(--nds-tab-on);
+  box-shadow: inset 0 -2px 0 var(--nds-orange);
+}
+
+.doc .tabs .tabpanel {
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  background: var(--nds-tab-body);
+  border: 1px solid var(--nds-hair);
+  border-radius: 0 var(--nds-radius-box) var(--nds-radius-box) var(--nds-radius-box);
+  color: var(--nds-text);
+}
+
+/* Opt-in with the [.steps] role. counter(list-item) honors [start=n]; the marker is pinned
+   to the first line so steps with attached blocks (+) still align. */
+.doc .olist.steps > ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.doc .olist.steps > ol > li {
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 10px;
+}
+
+.doc .olist.steps > ol > li::before {
+  content: counter(list-item);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--nds-radius-pill);
+  background: var(--nds-step-bg);
+  color: var(--nds-step-fg);
+  font-weight: 700;
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+}
+
+@media print {
+  .doc .olist.steps > ol > li::before {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact; /* stylelint-disable-line property-no-unknown */
+  }
+}
+
+.doc .quoteblock,
+.doc .verseblock {
+  background: var(--nds-panel);
+  border-left: 3px solid var(--nds-purple);
+  border-radius: 0 var(--nds-radius-box) var(--nds-radius-box) 0;
+  color: var(--nds-text);
+}
+
+.doc .quoteblock .paragraph { font-style: normal; }
+
+.doc .quoteblock > .title {
+  color: var(--nds-text);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.doc .quoteblock .attribution { color: var(--nds-text-2); }
+
+.doc details {
+  border: 1px solid var(--nds-hair);
+  border-radius: var(--nds-radius-box);
+  margin: 1rem 0 10px;
+  padding: 0;
+  background: transparent;
+}
+
+.doc details > summary {
+  margin: 0;
+  padding: 11px 14px 11px 38px;
+  font-weight: 700;
+  color: var(--nds-text);
+  cursor: pointer;
+}
+
+.doc details > summary::before {
+  left: 18px;
+  top: calc(11px + (var(--doc-line-height) * 0.5 - 0.3) * 1em);
+}
+
+.doc details > .content {
+  padding: 0 14px 14px;
+  background: transparent;
+}
+
+.doc .imageblock img {
+  border-radius: var(--nds-radius-box);
+  border: 1px solid var(--nds-hair);
+  box-shadow: none;
+}
+
+.doc .imageblock .title {
+  color: var(--nds-text-2);
+  font-size: 13px;
+  font-style: normal;
+}
+
+.page-feedback {
+  border-top: 1px solid var(--nds-hair);
+  color: var(--nds-text);
+}
+
+.page-feedback-vote {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--nds-radius-pill);
+  border: 0;
+  background: transparent;
+  color: var(--nds-text);
+}
+
+/* The upstream octicon is black; draw it as a mask in the text color so it shows in dark mode. */
+.nav-menu-toggle {
+  background: var(--nds-text);
+  mask: url(../img/octicons-16.svg#view-unfold) no-repeat center / 100% 100%;
+}
+
+.nav-menu-toggle.is-active {
+  mask-image: url(../img/octicons-16.svg#view-fold);
+}

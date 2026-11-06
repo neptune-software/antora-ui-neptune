@@ -1,0 +1,117 @@
+.error-page {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: 560px;
+  padding: 100px 120px;
+  box-sizing: border-box;
+  background: var(--nds-bg);
+  color: var(--nds-text);
+}
+
+.error-page-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+}
+
+.error-page::before {
+  content: "";
+  position: absolute;
+  width: 820px;
+  height: 820px;
+  right: -160px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--nds-glow), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.error-page-pattern {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  height: 115%;
+  width: auto;
+  aspect-ratio: 2 / 1; /* stylelint-disable-line property-no-unknown */
+  transform: translate(30.5%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  display: none;
+}
+html[data-theme^="dark"] .error-page-pattern { display: block; }
+
+.error-page-pre {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nds-text);
+}
+
+.error-page-pre::before {
+  content: "< ";
+  color: var(--nds-orange);
+}
+
+.error-page-pre::after {
+  content: " />";
+  color: var(--nds-orange);
+}
+
+.error-page-title {
+  font-size: 48px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  margin: 14px 0 12px;
+  max-width: 22ch;
+  color: var(--nds-heading);
+}
+
+.error-page-title em {
+  font-style: normal;
+  color: var(--nds-orange);
+}
+
+.error-page-text {
+  font-size: 18px;
+  color: var(--nds-text-2);
+  margin: 0;
+  max-width: 56ch;
+}
+
+.error-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.error-page-button {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: var(--nds-radius-pill);
+  background: var(--nds-orange);
+  color: var(--nds-burgundy);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  border: 1.5px solid var(--nds-orange);
+}
+
+.error-page-button.error-page-back {
+  background: transparent;
+  color: var(--nds-btn-outline);
+  border-color: var(--nds-btn-outline);
+}
+
+@media (max-width: 800px) {
+  .error-page { padding: 64px 24px; }
+  .error-page-title { font-size: 36px; }
+}

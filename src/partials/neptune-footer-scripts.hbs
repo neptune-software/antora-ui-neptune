@@ -1,0 +1,917 @@
+<script async src="{{{uiRootPath}}}/js/vendor/tabs.js" data-sync-storage-key="preferred-tab"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/typesense-docsearch.js@latest/dist/cdn/docsearch.min.js" ></script>
+
+<script>
+  function parseMd(text) {
+    var html = (typeof marked !== 'undefined') ? marked.parse(text) : text.replace(/\n/g, '<br>');
+    return html.replace(/<a /g, '<a target="_blank" rel="noopener" ');
+  }
+
+  const currentComponent = '{{page.component.name}}';
+  const currentVersion = '{{page.version}}';
+  const pageTitle = '{{page.title}}';
+  const pageModuleType = '{{page.attributes.[module-type]}}';
+  const pageVersion = '{{page.attributes.version}}';
+  const pageTool = '{{page.attributes.tool}}';
+  const pageDocType = '{{page.attributes.[doc-type]}}';
+  const pageAudience = '{{page.attributes.audience}}';
+  const pageSkillLevel = '{{page.attributes.[skill-level]}}';
+  const pageDescription = '{{page.attributes.description}}';
+  const pageKeywords = '{{page.attributes.keywords}}';
+  const pageFunctionalKeywords = '{{page.attributes.[functional-keywords]}}';
+  const evalRules = [];
+
+  if (currentComponent && currentVersion) {
+    evalRules.push(`(component:=${currentComponent} && version:=${currentVersion}):12`);
+  }
+  if (currentComponent) evalRules.push(`(component:=${currentComponent}):9`);
+  if (currentVersion) evalRules.push(`(version:=${currentVersion}):3`);
+
+  const sortBy = evalRules.length > 0
+    ? `_eval([ ${evalRules.join(', ')} ]):desc,version_sort:desc`
+    : 'version_sort:desc';
+
+  const searchParams = {
+    sort_by: sortBy,
+    per_page: 10,
+  };
+
+  var dsInstance = docsearch({
+    inputSelector: '#searchbar',
+    typesenseCollectionName: 'neptune-docs',
+    typesenseServerConfig: {
+      nodes: [{
+        host:     window.location.hostname,
+        port:     '443',
+        protocol: 'https',
+        path:     '/typesense-proxy'
+      }],
+      apiKey: 'xyz123',     // replaced by the server-side proxy
+    },
+    typesenseSearchParams: searchParams,
+    debug: false
+  });
+
+  const NAIA_ENDPOINT = '/naia-proxy/createChatCompletion';
+  const NAIA_FEEDBACK_ENDPOINT = '/naia-proxy/submitFeedback';
+
+  const NAIA_SVG_COPY = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const NAIA_SVG_THUMB_UP = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>';
+  const NAIA_SVG_THUMB_DOWN = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>';
+
+  let naiaLastContent = '';
+  let naiaCurrentQuery = '';
+  let naiaLineId = null;
+  let naiaLastAnswer = '';
+  let naiaLastPlanet = null;
+  let naiaLastVersion = '';
+  let naiaFeedbackPositive = true;
+
+  let _allowNextInputThrough = false;
+  let _lastSearchedQuery = '';
+  let _naiaWasTriggered = false;
+  let _activeSearchTab = 'docs';
+
+  function createAskNaiaPanel() {
+    const el = document.createElement('div');
+    el.id = 'naia-ask-panel';
+    el.innerHTML =
+      '<div class="naia-ask-header">' +
+        '<img class="naia-icon" src="https://portal.neptune-software.com/media/root/NAIA/Naia_Identifier%201.svg" alt="NAIA">' +
+        '<span class="naia-ask-title">Naia</span>' +
+        '<span class="naia-disclaimer">The Neptune AI Assistant.</span>' +
+      '</div>' +
+      '<div class="naia-ask-inner">' +
+        '<button class="naia-ask-btn" id="naia-ask-btn">Ask Naia</button>' +
+        '<div class="naia-ask-warning">' +
+          'Do not share any personal or sensitive data. AI can make mistakes, please check important information. By continuing, you accept the Neptune Software privacy policy. Check the policy <a href="https://www.neptune-software.com/privacy-policy/" target="_blank" rel="noopener" class="naia-privacy-link">here</a>.' +
+        '</div>' +
+      '</div>';
+    return el;
+  }
+
+  function ensureAskNaiaPanel(dropdown) {
+    let panel = dropdown.querySelector('#naia-ask-panel');
+    if (!panel) {
+      panel = createAskNaiaPanel();
+      dropdown.appendChild(panel);
+    }
+    return panel;
+  }
+
+  function createNaiaSection() {
+    const el = document.createElement('div');
+    el.id = 'naia-search-section';
+    el.style.display = 'none';
+    el.innerHTML =
+      '<div class="naia-body"></div>';
+    return el;
+  }
+
+  function ensureNaiaSection(dropdown) {
+    let section = dropdown.querySelector('#naia-search-section');
+    if (!section) {
+      section = createNaiaSection();
+      dropdown.appendChild(section);
+    }
+    return section;
+  }
+
+  function ensureTsExpandBtn(dropdown) {
+    if (dropdown.querySelector('#ts-close-btn')) return;
+    const dataset = dropdown.querySelector('[class^="ds-dataset-"]');
+    if (!dataset) return;
+    const bar = document.createElement('div');
+    bar.className = 'ts-header-bar';
+    bar.innerHTML = '<button class="ts-close-btn" id="ts-close-btn" title="Close search panel" aria-label="Close">\u00d7</button>';
+    dataset.insertBefore(bar, dataset.firstChild);
+  }
+
+  function setNaiaContent(html) {
+    naiaLastContent = html;
+    let body = document.querySelector('#naia-search-section .naia-body');
+    if (!body) {
+      const dropdown = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+      if (dropdown) { ensureNaiaSection(dropdown); body = dropdown.querySelector('#naia-search-section .naia-body'); }
+    }
+    if (body) body.innerHTML = html;
+  }
+
+  async function fetchNaiaAnswer(query) {
+    naiaLineId = null;
+    const dxpVersion = (currentVersion || '').replace(/^v/, '');
+    const editionLabel = {
+      'neptune-sap-edition':      'SAP Edition',
+      'neptune-dxp-open-edition': 'Open Edition',
+      'neptune-dxp-proxy':        'DXP Proxy',
+      'neptune-dxp-portal':       'DXP Portal',
+      'neptune-dxp-cloud':        'DXP Cloud'
+    }[currentComponent] || '';
+    const planet = currentComponent === 'neptune-sap-edition' ? 'P8'
+      : editionLabel ? 'P9'
+      : null;
+    naiaLastPlanet = planet;
+    naiaLastVersion = dxpVersion;
+
+    const messages = [];
+
+    const pageContextParts = [];
+    if (pageTitle)               pageContextParts.push('page-title: "' + pageTitle + '"');
+    if (pageModuleType)          pageContextParts.push('module-type: ' + pageModuleType + (pageVersion ? ' ' + pageVersion : (dxpVersion ? ' ' + dxpVersion : '')));
+    if (pageTool)                pageContextParts.push('tool: ' + pageTool);
+    if (pageDocType)             pageContextParts.push('doc-type: ' + pageDocType);
+    if (pageAudience)            pageContextParts.push('audience: ' + pageAudience);
+    if (pageSkillLevel)          pageContextParts.push('skill-level: ' + pageSkillLevel);
+    if (pageDescription)         pageContextParts.push('description: ' + pageDescription);
+    if (pageKeywords)            pageContextParts.push('keywords: ' + pageKeywords);
+    if (pageFunctionalKeywords)  pageContextParts.push('functional-keywords: ' + pageFunctionalKeywords);
+
+    const userMessage = pageContextParts.length > 0
+      ? '[Page context]\n' + pageContextParts.join('\n') + '\n\n[Query]\n' + query
+      : query;
+
+    messages.push({ role: 'user', content: userMessage });
+
+    const metadata = {
+      planet: planet,
+      space: 'documentation',
+      account: 'Neptune DXP Documentation',
+      automation: 'chat',
+      dxpVersion: dxpVersion,
+      userHash: null,
+      triggeredFrom: 'Documentation Search',
+      threadId: null,
+      title: 'Documentation Search'
+    };
+
+    // ClientID is added server-side by the proxy.
+    const resp = await fetch(NAIA_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: messages,
+        stream: true,
+        query: query,
+        metadata: metadata,
+        vdb: 'all',
+        permission: 'include:*',
+        useChatHistory: false
+      })
+    });
+    if (resp.status === 429) throw new Error('rate_limit');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+    let answer = '';
+
+    // Backend may ignore stream:true and reply with one JSON body: { response: "..." }
+    if ((resp.headers.get('Content-Type') || '').includes('application/json')) {
+      const data = await resp.json();
+      if (data.id) naiaLineId = data.id;
+      answer = data.response
+        || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+        || data.content || data.text || '';
+    } else {
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed === 'data: [DONE]') continue;
+          const jsonStr = trimmed.startsWith('data: ') ? trimmed.slice(6) : trimmed;
+          try {
+            const parsed = JSON.parse(jsonStr);
+            if (!naiaLineId && parsed.id) naiaLineId = parsed.id;
+            const delta = (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content)
+              || parsed.content || parsed.text || '';
+            if (delta) {
+              answer += delta;
+              const partial = parseMd(answer);
+              setNaiaContent('<div class="naia-answer">' + partial + '</div>');
+              setNaiaActive(true);
+            }
+          } catch(e) {}
+        }
+      }
+    }
+    if (answer) {
+      naiaLastAnswer = answer;
+      const finalHtml = parseMd(answer);
+      setNaiaContent(
+        '<div class="naia-answer">' + finalHtml + '</div>' +
+        '<div class="naia-actions">' +
+          '<button class="naia-action-btn naia-copy-btn" title="Copy answer">' + NAIA_SVG_COPY + '</button>' +
+          '<button class="naia-action-btn naia-thumb-btn" data-positive="true" title="Good response">' + NAIA_SVG_THUMB_UP + '</button>' +
+          '<button class="naia-action-btn naia-thumb-btn" data-positive="false" title="Poor response">' + NAIA_SVG_THUMB_DOWN + '</button>' +
+        '</div>'
+      );
+      setNaiaActive(true);
+    }
+    return { answer: answer };
+  }
+
+  function naiaFallbackCopy(answerEl) {
+    var range = document.createRange();
+    range.selectNodeContents(answerEl);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try { document.execCommand('copy'); } catch(e) {}
+    sel.removeAllRanges();
+  }
+
+  function showFeedbackPopup(positive) {
+    naiaFeedbackPositive = positive;
+    closeFeedbackPopup(false);
+    var placeholder = positive ? 'What did you like about the response?' : 'What was the issue with the response?';
+    var titleIcon = positive ? NAIA_SVG_THUMB_UP : NAIA_SVG_THUMB_DOWN;
+    var popup = document.createElement('div');
+    popup.className = 'naia-feedback-popup';
+    popup.innerHTML =
+      '<button class="naia-feedback-close" aria-label="Close">\u00d7</button>' +
+      '<div class="naia-feedback-title">' + titleIcon + 'Provide additional feedback</div>' +
+      '<textarea class="naia-feedback-textarea" placeholder="' + placeholder + '"></textarea>' +
+      '<div class="naia-feedback-footer"><button class="naia-feedback-submit">Submit feedback</button></div>';
+    document.body.appendChild(popup);
+    var actionsEl = document.querySelector('.naia-actions');
+    if (actionsEl) {
+      var rect = actionsEl.getBoundingClientRect();
+      var popupH = popup.getBoundingClientRect().height;
+      popup.style.left = rect.left + 'px';
+      popup.style.width = Math.min(rect.width, 380) + 'px';
+      popup.style.top = (rect.top - popupH - 8) + 'px';
+    }
+    // When the textarea gets focus, blur fires on the searchbar BEFORE focus fires
+    // on the textarea — so autocomplete.js sets display:none before we can observe it.
+    // Fix: restore immediately on focus, then keep watching for any further hides.
+    var ta = popup.querySelector('.naia-feedback-textarea');
+    if (ta) {
+      ta.addEventListener('focus', function() {
+        var dropdown = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+        if (!dropdown) return;
+        if (dropdown.style.display === 'none') {
+          dropdown.style.display = 'block';
+          if (naiaLastContent) setNaiaContent(naiaLastContent);
+        }
+        var obs = new MutationObserver(function() {
+          if (dropdown.style.display === 'none') {
+            dropdown.style.display = 'block';
+            if (naiaLastContent) setNaiaContent(naiaLastContent);
+          }
+        });
+        obs.observe(dropdown, { attributes: true, attributeFilter: ['style'] });
+        ta.addEventListener('blur', function() { obs.disconnect(); }, { once: true });
+      });
+    }
+    document.querySelectorAll('.naia-thumb-btn').forEach(function(btn) {
+      btn.classList.toggle('active', (btn.dataset.positive === 'true') === positive);
+    });
+  }
+
+  function closeFeedbackPopup(refocus) {
+    var popup = document.querySelector('.naia-feedback-popup');
+    if (popup) popup.remove();
+    document.querySelectorAll('.naia-thumb-btn').forEach(function(btn) { btn.classList.remove('active'); });
+    if (refocus !== false) {
+      var sb = document.getElementById('searchbar');
+      if (sb) sb.focus();
+    }
+  }
+
+  function submitFeedback(positive, comment) {
+    var popup = document.querySelector('.naia-feedback-popup');
+    if (popup) {
+      popup.innerHTML = '<button class="naia-feedback-close" aria-label="Close">\u00d7</button><div class="naia-feedback-thanks">Submitted, thank you!</div>';
+      setTimeout(function() { closeFeedbackPopup(); }, 2000);
+    }
+    fetch(NAIA_FEEDBACK_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        positive: positive,
+        lineId: naiaLineId,
+        messages: [
+          { content: naiaCurrentQuery, type: '', role: 'user', blocked: false, visible: true, handler: 'chat' },
+          { id: naiaLineId, hidden: false, action: false, content: naiaLastAnswer, refusal: null, role: 'assistant', positive: positive }
+        ],
+        lastQuery: naiaCurrentQuery,
+        identifier: 'new',
+        space: 'documentation',
+        comment: comment,
+        account: 'Neptune DXP Documentation',
+        automation: 'chat',
+        planet: naiaLastPlanet,
+        version: naiaLastVersion
+      })
+    }).catch(function() {});
+  }
+
+  document.addEventListener('mousedown', function(e) {
+    if (!e.target) return;
+    _lastMousedownTs = Date.now();
+    _lastMousedownOutside = !e.target.closest('.algolia-autocomplete') && e.target.id !== 'searchbar';
+    if (e.target.id === 'ts-close-btn') {
+      _allowDropdownClose = true;
+      return;
+    }
+    if (e.target.classList.contains('naia-feedback-textarea')) return;
+    if (e.target.closest('#naia-search-section') || e.target.closest('.naia-feedback-popup')) {
+      e.preventDefault();
+    }
+  });
+
+  // Prevent dropdown from closing unless the user clicks the X button.
+  // We intercept the style.display setter on the dropdown element and block
+  // any attempt to set it to 'none' while a query is active and _allowDropdownClose is false.
+  var _allowDropdownClose = false;
+  var _naiaClosedByX = false;
+  var _lastMousedownTs = 0;
+  var _lastMousedownOutside = false;
+
+  function shouldBlockClose() {
+    if (_allowDropdownClose) return false;
+    var sb = document.getElementById('searchbar');
+    if (!sb || !sb.value.trim()) return false;
+    if (_lastMousedownOutside && (Date.now() - _lastMousedownTs) < 500) return false;
+    return true;
+  }
+
+  function interceptDropdownClose(dropdown) {
+    if (dropdown._closeIntercepted) return;
+    dropdown._closeIntercepted = true;
+
+    // Reactively revert display:none on the dropdown style attribute.
+    // The autocomplete library sets the full style string via cssText/setAttribute,
+    // so we observe the attribute and immediately restore display:block.
+    new MutationObserver(function() {
+      if (!shouldBlockClose()) return;
+      var current = dropdown.getAttribute('style') || '';
+      if (/display\s*:\s*none/.test(current)) {
+        Element.prototype.setAttribute.call(
+          dropdown, 'style',
+          current.replace(/display\s*:\s*none/gi, 'display: block')
+        );
+      }
+    }).observe(dropdown, { attributes: true, attributeFilter: ['style'] });
+  }
+
+  const naiaBodyObserver = new MutationObserver(function() {
+    const dropdown = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+    if (!dropdown) return;
+    ensureNaiaSection(dropdown);
+    ensureAskNaiaPanel(dropdown);
+    ensureTsExpandBtn(dropdown);
+    interceptDropdownClose(dropdown);
+  });
+  naiaBodyObserver.observe(document.body, { childList: true, subtree: true });
+
+  function setNaiaActive(active) {
+    var dropdown = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+    if (!dropdown) return;
+    if (active) {
+      dropdown.classList.add('naia-active');
+    } else {
+      dropdown.classList.remove('naia-active');
+    }
+  }
+
+  // Delegated handler for all interactive elements inside the dropdown.
+  // Uses mouseup instead of click because e.preventDefault() on mousedown
+  // (needed to keep the searchbar focused) suppresses the click event in Chrome.
+  document.addEventListener('mouseup', function(e) {
+    if (e.target && e.target.closest('.naia-copy-btn')) {
+      var answerEl = document.querySelector('#naia-search-section .naia-answer');
+      if (answerEl) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(answerEl.innerText).catch(function() { naiaFallbackCopy(answerEl); });
+        } else {
+          naiaFallbackCopy(answerEl);
+        }
+        var copyBtn = e.target.closest('.naia-copy-btn');
+        copyBtn.classList.add('active');
+        setTimeout(function() { copyBtn.classList.remove('active'); }, 1500);
+      }
+    }
+    if (e.target && e.target.closest('.naia-thumb-btn')) {
+      var thumbBtn = e.target.closest('.naia-thumb-btn');
+      showFeedbackPopup(thumbBtn.dataset.positive === 'true');
+    }
+    if (e.target && e.target.closest('.naia-feedback-close')) {
+      closeFeedbackPopup();
+    }
+    if (e.target && e.target.closest('.naia-feedback-submit')) {
+      var ta = document.querySelector('.naia-feedback-textarea');
+      submitFeedback(naiaFeedbackPositive, ta ? ta.value : '');
+    }
+    if (e.target && e.target.id === 'ts-close-btn') {
+      _allowDropdownClose = true;
+      _naiaClosedByX = true;
+      var dd = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+      if (dd) {
+        Element.prototype.setAttribute.call(dd, 'style',
+          (dd.getAttribute('style') || '').replace(/display\s*:\s*block/gi, 'display: none'));
+      }
+      setTimeout(function() { _allowDropdownClose = false; }, 200);
+      var sbEl = document.getElementById('searchbar');
+      if (sbEl) sbEl.blur();
+      return;
+    }
+    if (e.target && (e.target.id === 'naia-ask-btn' || e.target.closest('#naia-ask-btn'))) {
+      if (naiaCurrentQuery) triggerNaiaFetch(naiaCurrentQuery);
+    }
+  });
+
+  function triggerNaiaFetch(query) {
+    _naiaWasTriggered = true;
+    var naiaSection = document.querySelector('#naia-search-section');
+    if (naiaSection) {
+      naiaSection.style.display = '';
+      if (_searchModalOpen) {
+        var card = document.getElementById('search-modal-card');
+        var inputRow = document.getElementById('search-modal-bar');
+        if (card && inputRow) {
+          var availH = card.getBoundingClientRect().height - inputRow.getBoundingClientRect().height - 32;
+          naiaSection.style.maxHeight = availH + 'px';
+          naiaSection.style.overflowY = 'auto';
+          naiaSection.style.overflowX = 'hidden';
+        }
+      }
+    }
+    setNaiaContent('<div class="naia-loading"><img class="naia-loading-spinner" src="https://portal.neptune-software.com/media/root/NAIA/Naia_Identifier%201.svg" alt="Loading…"></div>');
+    fetchNaiaAnswer(query).catch(function(err) {
+      if (err && err.message === 'rate_limit') {
+        setNaiaContent('<div class="naia-loading">Too many requests — please wait a moment before asking again.</div>');
+      } else {
+        setNaiaContent('<div class="naia-loading">Could not get an answer.</div>');
+      }
+    });
+  }
+
+  function triggerTypesenseSearch() {
+    var sb = document.getElementById('searchbar');
+    if (!sb) return;
+    var query = sb.value.trim();
+    if (!query) return;
+    naiaLastContent = '';
+    _naiaWasTriggered = false;
+    var dropdown = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+    if (dropdown) {
+      var tsDataset = dropdown.querySelector('[class^="ds-dataset-"]');
+      if (tsDataset) tsDataset.style.display = '';
+      var tsBar = dropdown.querySelector('.ts-header-bar');
+      if (tsBar) tsBar.style.display = '';
+    }
+    var naiaSection = document.querySelector('#naia-search-section');
+    if (naiaSection) { naiaSection.style.display = 'none'; setNaiaContent(''); setNaiaActive(false); }
+    var askPanel = document.querySelector('#naia-ask-panel');
+    if (askPanel) askPanel.style.display = '';
+    naiaCurrentQuery = query;
+    _lastSearchedQuery = query;
+    _allowNextInputThrough = true;
+    sb.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  var searchSubmitBtn = document.getElementById('search-submit-btn');
+  if (searchSubmitBtn) {
+    searchSubmitBtn.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+    });
+    searchSubmitBtn.addEventListener('click', function() {
+      triggerTypesenseSearch();
+      var sb = document.getElementById('searchbar');
+      if (sb) sb.focus();
+    });
+  }
+
+  var searchToggleBtn = document.getElementById('search-toggle-btn');
+  if (searchToggleBtn) {
+    searchToggleBtn.addEventListener('click', function() {
+      openSearchModal();
+    });
+  }
+
+  // Capture-phase interceptor: block input events from reaching docsearch unless explicitly allowed.
+  // Capture phase fires before docsearch's bubbling listener regardless of registration order.
+  var naiaSearchbar = document.getElementById('searchbar');
+  if (naiaSearchbar) {
+    naiaSearchbar.addEventListener('input', function(e) {
+      if (!_allowNextInputThrough) {
+        e.stopImmediatePropagation();
+      }
+      _allowNextInputThrough = false;
+    }, true);
+
+    // Enter key triggers the Typesense search.
+    // Uses capture phase + stopImmediatePropagation so autocomplete.js never sees Enter
+    // (otherwise a second Enter would navigate to the first highlighted result).
+    naiaSearchbar.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        triggerTypesenseSearch();
+      }
+    }, true);
+
+    naiaSearchbar.addEventListener('focus', function() {
+      var val = this.value.trim();
+      if (!val || val !== _lastSearchedQuery) return;
+      var self = this;
+
+      if (_naiaClosedByX) {
+        _naiaClosedByX = false;
+        var dd = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+        if (dd) {
+          Element.prototype.setAttribute.call(dd, 'style',
+            (dd.getAttribute('style') || '').replace(/display\s*:\s*none/gi, 'display: block'));
+        }
+      }
+
+      setTimeout(function() {
+        _allowNextInputThrough = true;
+        self.value = val + '\u200b';
+        self.dispatchEvent(new Event('input', { bubbles: true }));
+        self.value = val;
+        _allowNextInputThrough = true;
+        self.dispatchEvent(new Event('input', { bubbles: true }));
+        if (_naiaWasTriggered && naiaLastContent) {
+          setTimeout(function() {
+            var naiaSection = document.querySelector('#naia-search-section');
+            if (naiaSection) {
+              naiaSection.style.display = '';
+              if (_searchModalOpen) {
+                var card = document.getElementById('search-modal-card');
+                var inputRow = document.getElementById('search-modal-bar');
+                if (card && inputRow) {
+                  var availH = card.getBoundingClientRect().height - inputRow.getBoundingClientRect().height - 32;
+                  naiaSection.style.maxHeight = availH + 'px';
+                  naiaSection.style.overflowY = 'auto';
+                  naiaSection.style.overflowX = 'hidden';
+                }
+              }
+            }
+            setNaiaContent(naiaLastContent);
+            if (naiaLastContent.indexOf('naia-answer') !== -1) setNaiaActive(true);
+          }, 100);
+        }
+      }, 0);
+    });
+
+    naiaSearchbar.addEventListener('input', function() {
+      naiaCurrentQuery = this.value.trim();
+    });
+
+    // When searchbar blurs (e.g. user clicks DevTools), autocomplete.js clears the dataset
+    // but our MutationObserver keeps the dropdown visible. Detect this and re-trigger search.
+    naiaSearchbar.addEventListener('blur', function() {
+      var query = _lastSearchedQuery;
+      if (!query) return;
+      setTimeout(function() {
+        var dropdown = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
+        if (!dropdown) return;
+        var style = dropdown.getAttribute('style') || '';
+        if (/display\s*:\s*none/.test(style)) return;
+        var dataset = dropdown.querySelector('[class^="ds-dataset-"]');
+        if (!dataset || dataset.style.display === 'none') return;
+        var hits = dataset.querySelectorAll('[class*="docsearch-suggestion"]');
+        if (hits.length === 0) {
+          var sb = document.getElementById('searchbar');
+          if (!sb) return;
+          _allowNextInputThrough = true;
+          sb.value = query + '\u200b';
+          sb.dispatchEvent(new Event('input', { bubbles: true }));
+          sb.value = query;
+          _allowNextInputThrough = true;
+          sb.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }, 150);
+    });
+  }
+
+  var searchModal = document.createElement('div');
+  searchModal.id = 'search-modal';
+  searchModal.innerHTML =
+    '<div id="search-modal-backdrop"></div>' +
+    '<div id="search-modal-card">' +
+      '<div id="search-modal-bar">' +
+        '<div id="search-modal-input-row">' +
+          '<svg id="search-modal-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+          '<input type="search" id="search-modal-input" placeholder="Search the docs…" autocomplete="off">' +
+          '<kbd id="search-modal-esc">ESC</kbd>' +
+        '</div>' +
+        // Mode buttons: docs (Typesense) and Naia.
+        '<div id="search-modal-tabs" role="tablist">' +
+          '<button class="search-tab-btn active" data-tab="docs" role="tab" title="Search the docs" aria-label="Search the docs"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>' +
+          '<button class="search-tab-btn naia-tab-btn" data-tab="ai" role="tab" title="Ask Naia" aria-label="Ask Naia"><img class="naia-tab-icon" src="https://portal.neptune-software.com/media/root/NAIA/Naia_Identifier%201.svg" alt=""></button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="search-modal-results-container" class="tab-docs"></div>' +
+    '</div>';
+  document.body.appendChild(searchModal);
+
+  var _searchModalOpen = false;
+  var _acOriginalParent = null;
+
+  function openSearchModal() {
+    if (_searchModalOpen) return;
+    _searchModalOpen = true;
+    searchModal.classList.add('active');
+    document.body.classList.add('search-modal-active');
+
+    var ac = document.querySelector('.algolia-autocomplete');
+    var container = document.getElementById('search-modal-results-container');
+    if (ac && container && !container.contains(ac)) {
+      _acOriginalParent = ac.parentNode;
+      container.appendChild(ac);
+    }
+
+    var sb = document.getElementById('searchbar');
+    var modalInput = document.getElementById('search-modal-input');
+    if (sb && modalInput) modalInput.value = sb.value;
+
+    setTimeout(function() {
+      var mi = document.getElementById('search-modal-input');
+      if (mi) mi.focus();
+    }, 30);
+  }
+
+  function closeSearchModal() {
+    if (!_searchModalOpen) return;
+    _searchModalOpen = false;
+
+    _allowDropdownClose = true;
+    _lastMousedownOutside = true;
+    _lastMousedownTs = Date.now();
+
+    var dd = document.querySelector('.ds-dropdown-menu');
+    if (dd) {
+      Element.prototype.setAttribute.call(dd, 'style',
+        (dd.getAttribute('style') || '').replace(/display\s*:\s*block/gi, 'display: none'));
+      if (!/display/.test(dd.getAttribute('style') || '')) {
+        dd.style.display = 'none';
+      }
+    }
+
+    var ac = document.querySelector('.algolia-autocomplete');
+    if (ac && _acOriginalParent) {
+      var submitBtn = _acOriginalParent.querySelector('.search-submit-btn');
+      if (submitBtn) {
+        _acOriginalParent.insertBefore(ac, submitBtn);
+      } else {
+        _acOriginalParent.appendChild(ac);
+      }
+      _acOriginalParent = null;
+    }
+
+    var sb = document.getElementById('searchbar');
+    if (sb) sb.blur();
+
+    searchModal.classList.remove('active');
+    document.body.classList.remove('search-modal-active');
+
+    _lastSearchedQuery = '';
+
+    setTimeout(function() { _allowDropdownClose = false; }, 300);
+  }
+
+  function switchSearchTab(tab) {
+    _activeSearchTab = tab;
+    var container = document.getElementById('search-modal-results-container');
+    if (container) {
+      container.classList.toggle('tab-docs', tab === 'docs');
+      container.classList.toggle('tab-ai', tab === 'ai');
+    }
+    document.querySelectorAll('.search-tab-btn').forEach(function(btn) {
+      var on = btn.getAttribute('data-tab') === tab;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    var modeInput = document.getElementById('search-modal-input');
+    if (modeInput) modeInput.placeholder = tab === 'ai' ? 'Ask Naia…' : 'Search the docs…';
+
+    if (tab === 'docs') {
+      setNaiaActive(false);
+      var dataset = document.querySelector('[class^="ds-dataset-"]');
+      if (dataset) dataset.style.display = '';
+      var tsBar = document.querySelector('.ts-header-bar');
+      if (tsBar) tsBar.style.display = '';
+      var sb = document.getElementById('searchbar');
+      var mi = document.getElementById('search-modal-input');
+      if (sb && mi && mi.value.trim()) {
+        _lastSearchedQuery = mi.value.trim();
+        _allowNextInputThrough = true;
+        sb.value = mi.value;
+        sb.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    } else if (tab === 'ai') {
+      if (_naiaWasTriggered && naiaLastContent) {
+        setTimeout(function() {
+          var naiaSection = document.querySelector('#naia-search-section');
+          if (naiaSection) {
+            naiaSection.style.display = '';
+            if (_searchModalOpen) {
+              var card = document.getElementById('search-modal-card');
+              var inputRow = document.getElementById('search-modal-bar');
+              if (card && inputRow) {
+                var availH = card.getBoundingClientRect().height - inputRow.getBoundingClientRect().height - 32;
+                naiaSection.style.maxHeight = availH + 'px';
+                naiaSection.style.overflowY = 'auto';
+                naiaSection.style.overflowX = 'hidden';
+              }
+            }
+          }
+          setNaiaContent(naiaLastContent);
+          if (naiaLastContent.indexOf('naia-answer') !== -1) setNaiaActive(true);
+        }, 50);
+      }
+      updateNaiaAskBtnState();
+    }
+  }
+
+  document.getElementById('search-modal-input').addEventListener('input', function() {
+    var sb = document.getElementById('searchbar');
+    if (!sb) return;
+    sb.value = this.value;
+    naiaCurrentQuery = this.value.trim();
+
+    if (_activeSearchTab === 'docs') {
+      _lastSearchedQuery = naiaCurrentQuery;
+      _allowNextInputThrough = true;
+      sb.dispatchEvent(new Event('input', { bubbles: true }));
+    } else {
+      updateNaiaAskBtnState();
+    }
+  });
+
+  function updateNaiaAskBtnState() {
+    var mi = document.getElementById('search-modal-input');
+    var btn = document.querySelector('#search-modal-results-container #naia-ask-btn');
+    if (!btn) return;
+    var hasText = mi && mi.value.trim().length > 0;
+    btn.disabled = !hasText;
+    btn.classList.toggle('naia-ask-btn-disabled', !hasText);
+  }
+
+  var _origOpenSearchModal = openSearchModal;
+  openSearchModal = function() {
+    _origOpenSearchModal();
+    switchSearchTab('docs');
+    setTimeout(updateNaiaAskBtnState, 100);
+  };
+
+  var _naiaAskPanelObserver = new MutationObserver(function() {
+    if (document.querySelector('#search-modal-results-container #naia-ask-btn')) {
+      updateNaiaAskBtnState();
+    }
+  });
+  _naiaAskPanelObserver.observe(document.body, { childList: true, subtree: true });
+
+  document.getElementById('search-modal-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (_activeSearchTab === 'ai') {
+        var q = e.target.value.trim();
+        if (q) triggerNaiaFetch(q);
+      } else {
+        triggerTypesenseSearch();
+      }
+    } else if (e.key === 'Escape') {
+      closeSearchModal();
+    }
+  });
+
+  document.getElementById('search-modal-card').addEventListener('mousedown', function(e) {
+    _lastMousedownOutside = false;
+    _lastMousedownTs = Date.now();
+  });
+
+  var navbarSb = document.getElementById('searchbar');
+  if (navbarSb) {
+    navbarSb.addEventListener('mousedown', function(e) {
+      if (!_searchModalOpen) { e.preventDefault(); openSearchModal(); }
+    });
+  }
+  var navSearchBtn2 = document.getElementById('search-submit-btn');
+  if (navSearchBtn2) {
+    navSearchBtn2.addEventListener('mousedown', function(e) {
+      if (!_searchModalOpen) { e.preventDefault(); openSearchModal(); }
+    });
+  }
+
+  document.querySelectorAll('.search-tab-btn').forEach(function(btn) {
+    btn.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+    });
+    btn.addEventListener('click', function() {
+      switchSearchTab(this.getAttribute('data-tab'));
+    });
+  });
+
+  document.getElementById('search-modal-backdrop').addEventListener('mousedown', function() {
+    closeSearchModal();
+  });
+
+  document.getElementById('search-modal-esc').addEventListener('mousedown', function(e) {
+    e.stopPropagation();
+    closeSearchModal();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && _searchModalOpen) {
+      closeSearchModal();
+    }
+  });
+
+  var _hasResultsObserver = new MutationObserver(function() {
+    var container = document.getElementById('search-modal-results-container');
+    if (!container) return;
+    var hasSuggestions = container.querySelectorAll('.typesense-docsearch-suggestion').length > 0;
+    container.classList.toggle('has-results', hasSuggestions);
+  });
+  _hasResultsObserver.observe(document.body, { childList: true, subtree: true });
+
+  // Open result links in new tab on mousedown (valid user gesture), then block the click
+  // so docsearch never fires its selected handler (which clears the input and closes results)
+  var _resultLinkPending = false;
+  document.addEventListener('mousedown', function(e) {
+    var link = e.target.closest('a.typesense-docsearch-suggestion');
+    if (!link || !link.href) return;
+    _resultLinkPending = true;
+    window.open(link.href, '_blank', 'noopener');
+  }, true);
+
+  document.addEventListener('click', function(e) {
+    if (!_resultLinkPending) return;
+    _resultLinkPending = false;
+    var link = e.target.closest('a.typesense-docsearch-suggestion');
+    if (!link) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    var query = _lastSearchedQuery;
+    var sb = document.getElementById('searchbar');
+    var mi = document.getElementById('search-modal-input');
+    if (sb && query) {
+      sb.value = query;
+      if (mi) mi.value = query;
+      _allowNextInputThrough = true;
+      sb.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  }, true);
+
+  var _origShouldBlockClose = shouldBlockClose;
+  shouldBlockClose = function() {
+    if (_searchModalOpen) {
+      var sb = document.getElementById('searchbar');
+      if (sb && sb.value.trim()) return true;
+    }
+    return _origShouldBlockClose();
+  };
+</script>
+

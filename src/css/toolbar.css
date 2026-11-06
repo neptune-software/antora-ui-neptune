@@ -52,6 +52,56 @@
   background-image: url(../img/home.svg);
 }
 
+/* sits before the version menu and absorbs the free space, pushing the whole
+   right-hand group of the toolbar over */
+.page-print {
+  display: flex;
+  margin-left: auto;
+  line-height: 1;
+}
+
+/* .page-versions carries its own margin-left:auto for when this block is absent,
+   as on the 404 page; neutralise it here so the two do not split the free space */
+.page-print + .page-versions {
+  margin-left: 0.9rem;
+}
+
+.print-button {
+  /* it is a <button>; without this it keeps the platform's native bezel and stops
+     matching the plain text of the toolbar around it */
+  appearance: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font: inherit;
+  line-height: inherit;
+  padding: 0.5rem;
+}
+
+.print-button:hover {
+  color: var(--toolbar-font-color);
+  opacity: 0.75;
+}
+
+.print-button svg {
+  flex: none;
+}
+
+.print-button-label {
+  display: none;
+}
+
+@media screen and (min-width: 1024px) {
+  .print-button-label {
+    display: inline;
+  }
+}
+
 .edit-this-page {
   display: none;
   padding-right: 0.5rem;

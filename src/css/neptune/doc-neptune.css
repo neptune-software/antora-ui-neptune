@@ -1,0 +1,122 @@
+.doc h1,
+.doc h2,
+.doc h3,
+.doc h4,
+.doc h5,
+.doc h6 {
+  color: #38112a;
+  font-weight: bold;
+}
+
+.doc h3:not(.discrete) {
+  color: #38112a;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.doc .dlist dt {
+  font-style: normal;
+  font-weight: bold;
+}
+
+strong {
+  font-weight: bold;
+}
+
+.doc div.imageblock {
+  -webkit-box-align: start;
+  -moz-box-align: start;
+  align-items: start;
+}
+
+@media screen and (min-width: 1400px) {
+  .body {
+    margin: auto;
+    width: 80em;
+    background-color: white;
+  }
+}
+
+article {
+  border-right: 1px solid white;
+}
+
+.doc h2:not(.discrete) {
+  margin-bottom: 0.75rem;
+}
+
+.doc .sectionbody > .sect2 > h3 {
+  margin-top: 2rem;
+}
+
+.doc h4:not(.discrete),
+.doc h5:not(.discrete) {
+  margin-top: 1.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.doc .imageblock,
+.doc .videoblock {
+  margin-top: 1.5rem;
+}
+
+/* The gap comes from the next paragraph's margin-top, which collapses over the video's margin-bottom. */
+.doc .videoblock + .paragraph {
+  margin-top: 1.5rem;
+}
+
+.doc .videoblock iframe {
+  border-radius: 0.5rem;
+}
+
+/* <video> controls escape overflow/clip-path on ancestors; a mask clips the composited output. */
+.doc .videoblock video {
+  --video-radius: 0.5rem;
+
+  display: block;
+  max-width: 100%;
+  -webkit-mask:
+    radial-gradient(var(--video-radius) at var(--video-radius) var(--video-radius), #000 98%, #0000) top left,
+    radial-gradient(var(--video-radius) at calc(100% - var(--video-radius)) var(--video-radius), #000 98%, #0000) top right,
+    radial-gradient(var(--video-radius) at var(--video-radius) calc(100% - var(--video-radius)), #000 98%, #0000) bottom left,
+    radial-gradient(var(--video-radius) at calc(100% - var(--video-radius)) calc(100% - var(--video-radius)), #000 98%, #0000) bottom right,
+    linear-gradient(#000 0 0) center / calc(100% - var(--video-radius) * 2) 100%,
+    linear-gradient(#000 0 0) center / 100% calc(100% - var(--video-radius) * 2);
+  -webkit-mask-repeat: no-repeat;
+  mask:
+    radial-gradient(var(--video-radius) at var(--video-radius) var(--video-radius), #000 98%, #0000) top left,
+    radial-gradient(var(--video-radius) at calc(100% - var(--video-radius)) var(--video-radius), #000 98%, #0000) top right,
+    radial-gradient(var(--video-radius) at var(--video-radius) calc(100% - var(--video-radius)), #000 98%, #0000) bottom left,
+    radial-gradient(var(--video-radius) at calc(100% - var(--video-radius)) calc(100% - var(--video-radius)), #000 98%, #0000) bottom right,
+    linear-gradient(#000 0 0) center / calc(100% - var(--video-radius) * 2) 100%,
+    linear-gradient(#000 0 0) center / 100% calc(100% - var(--video-radius) * 2);
+  mask-repeat: no-repeat;
+}
+
+.doc .admonitionblock td.content {
+  border-radius: 0.5rem;
+}
+
+.doc img {
+  border-radius: 0.5rem;
+}
+
+.doc .imageblock img,
+.doc .image > img {
+  padding: 0;
+}
+
+.doc h1 .imageblock img,
+.doc h1 .image > img {
+  border: none;
+}
+
+.doc dd .imageblock img,
+.doc dd .image > img {
+  border: none;
+}
+
+.doc table.tableblock thead th {
+  background-color: var(--color-smoke-50);
+  font-weight: bold;
+}

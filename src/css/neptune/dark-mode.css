@@ -1,0 +1,157 @@
+/* postcss-custom-properties inlines :root vars at build time; dark overrides use
+   --dark-* vars (not declared on :root) so they resolve at runtime. */
+
+html[data-theme="dark"] {
+  --dark-modal-bg: var(--nds-surface);
+  --dark-modal-nav: var(--nds-kbd-bg);
+  --dark-modal-border: var(--nds-hair);
+  --dark-modal-text: var(--nds-text);
+  --dark-modal-muted: var(--nds-text-2);
+}
+
+html[data-theme^="dark"] .nav-container,
+html[data-theme^="dark"] .nav,
+html[data-theme^="dark"] .nav-panel-menu {
+  background: var(--dark-nav-bg) !important;
+}
+
+html[data-theme^="dark"] body {
+  background-color: var(--dark-page-bg) !important;
+  background-image: none !important;
+  color: var(--dark-body-text);
+}
+
+html[data-theme^="dark"] .body {
+  background-color: var(--dark-page-bg) !important;
+}
+
+html[data-theme^="dark"] main,
+html[data-theme^="dark"] .content,
+html[data-theme^="dark"] article.doc {
+  background-color: var(--dark-page-bg);
+  color: var(--dark-body-text);
+}
+
+html[data-theme^="dark"] aside.toc.sidebar,
+html[data-theme^="dark"] .toc-menu {
+  background-color: var(--dark-page-bg);
+}
+
+html[data-theme^="dark"] .toc-menu a {
+  color: var(--dark-muted-text);
+}
+
+html[data-theme^="dark"] .toc-menu a:hover,
+html[data-theme^="dark"] .toc-menu a.is-active {
+  color: var(--dark-accent);
+}
+
+html[data-theme^="dark"] footer.footer {
+  background-color: var(--dark-footer-bg);
+  color: var(--dark-muted-text);
+}
+
+html[data-theme^="dark"] .home-link {
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+html[data-theme^="dark"] .home-link:hover,
+html[data-theme^="dark"] .home-link.is-current {
+  opacity: 1;
+}
+
+html[data-theme^="dark"] .toc .toc-menu h3 {
+  color: var(--dark-body-text) !important;
+}
+
+html[data-theme^="dark"] .toc .toc-menu a:hover {
+  color: var(--dark-accent) !important;
+}
+
+html[data-theme^="dark"] .toc .toc-menu a.is-active {
+  border-left-color: var(--dark-accent) !important;
+  color: var(--dark-accent) !important;
+}
+
+html[data-theme^="dark"] .doc pre,
+html[data-theme^="dark"] .doc .listingblock pre,
+html[data-theme^="dark"] .doc .literalblock pre {
+  background: var(--dark-code-bg) !important;
+  color: var(--dark-body-text) !important;
+}
+
+html[data-theme^="dark"] .doc code {
+  background: var(--dark-code-bg);
+  color: var(--dark-body-text);
+}
+
+html[data-theme^="dark"] .nav-container[data-component="neptune-dxp"] {
+  background: var(--dark-page-bg) !important;
+}
+
+html[data-theme^="dark"] .doc {
+  color: var(--dark-body-text);
+}
+
+html[data-theme^="dark"] .doc h1.page,
+html[data-theme^="dark"] .doc h1,
+html[data-theme^="dark"] .doc h2,
+html[data-theme^="dark"] .doc h3,
+html[data-theme^="dark"] .doc h4,
+html[data-theme^="dark"] .doc h5,
+html[data-theme^="dark"] .doc h6,
+html[data-theme^="dark"] .doc h3:not(.discrete) {
+  color: var(--dark-heading-text) !important;
+}
+
+html[data-theme^="dark"] .doc h2 {
+  border-bottom: var(--dark-heading-rule-width) solid var(--dark-heading-rule);
+  padding-bottom: 6px;
+}
+
+html[data-theme^="dark"] .doc a,
+html[data-theme^="dark"] .doc a:hover {
+  color: var(--nds-doc-link) !important;
+}
+
+html[data-theme^="dark"] .doc table.tableblock thead th {
+  background-color: var(--dark-panel-bg) !important;
+  color: var(--dark-body-text);
+}
+
+html[data-theme^="dark"] .nav-menu {
+  color: var(--dark-body-text) !important;
+}
+
+html[data-theme^="dark"] .nav-menu h3.title {
+  color: var(--dark-accent) !important;
+}
+
+html[data-theme^="dark"] .nav-menu .nav-link {
+  color: var(--dark-body-text) !important;
+}
+
+html[data-theme^="dark"] div aside div div nav h3 a {
+  color: var(--dark-accent) !important;
+}
+
+html[data-theme^="dark"] article {
+  border-right: 1px solid transparent !important;
+}
+
+html[data-theme^="dark"] .doc img {
+  border-radius: 0.5rem;
+}
+
+html[data-theme^="dark"] .nav-link:active,
+html[data-theme^="dark"] .nav-link:focus,
+html[data-theme^="dark"] .nav-item-toggle:active,
+html[data-theme^="dark"] .nav-menu a:active,
+html[data-theme^="dark"] .toc-menu a:active,
+html[data-theme^="dark"] .toc-menu a:focus,
+html[data-theme^="dark"] .sidebar.toc .toc-menu a:focus {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.03);
+  outline: none;
+}

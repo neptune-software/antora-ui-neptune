@@ -1,0 +1,348 @@
+.header .navbar {
+  background: var(--nds-header-bg);
+  color: var(--nds-header-fg);
+  border-bottom: 1px solid var(--nds-hair);
+  height: 68px;
+  box-shadow: none;
+}
+
+/* Landing and 404: transparent header until html.nds-scrolled (js/13-header-scroll.js). */
+body.landing .header .navbar,
+body.status-404 .header .navbar {
+  background: transparent;
+  transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+html.nds-scrolled body.landing .header .navbar,
+html.nds-scrolled body.status-404 .header .navbar {
+  background: var(--nds-header-bg);
+}
+
+body.landing .nds-landing {
+  margin-top: calc(-1 * var(--body-top));
+  padding-top: var(--body-top);
+}
+
+body.status-404 .error-page {
+  margin-top: calc(-1 * var(--body-top));
+  padding-top: calc(100px + var(--body-top));
+}
+
+/* Upstream header.css lets the brand grow and the menu shrink; keep the brand at its width
+   and push the menu right. */
+.navbar-brand {
+  flex: 0 1 auto;
+}
+
+@media screen and (min-width: 1024px) {
+  .navbar-menu {
+    flex: auto;
+  }
+
+  .navbar-end {
+    margin-left: auto;
+  }
+}
+
+.navbar-brand .navbar-item.nds-brand {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+  color: var(--nds-header-fg);
+  text-decoration: none;
+}
+
+.navbar-brand .nds-brand__logo {
+  display: flex;
+  padding: 0;
+  color: var(--nds-header-fg);
+}
+
+.navbar-brand .nds-logo {
+  height: 26px;
+  width: auto;
+  display: block;
+  color: var(--nds-header-fg);
+}
+
+.navbar-brand .nds-sublogo {
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 8px 16px;
+  border: 1px solid var(--nds-input-border);
+  border-radius: var(--nds-radius-pill);
+  color: var(--nds-header-fg);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.navbar-brand .nds-sublogo:hover,
+.navbar-brand .nds-sublogo:focus-visible {
+  border-color: var(--nds-header-fg);
+}
+
+html[data-theme^="dark"] .navbar-brand .nds-sublogo:hover,
+html[data-theme^="dark"] .navbar-brand .nds-sublogo:focus-visible {
+  background: var(--nds-nav-active-bg);
+}
+
+@media screen and (max-width: 480px) {
+  .navbar-brand .nds-logo {
+    height: 20px;
+  }
+
+  .navbar-brand .nds-sublogo {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+}
+
+.navbar-end .navbar-item,
+.navbar-end .navbar-item a:not(.is-primary) {
+  color: var(--nds-header-fg);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.navbar-item.searchbar .searchbar-wrapper,
+.navbar-item.searchbar input {
+  background: var(--nds-input-bg);
+  border: 1px solid var(--nds-input-border);
+  border-radius: var(--nds-radius-pill);
+  color: var(--nds-text);
+}
+.navbar-item.searchbar input::placeholder { color: var(--nds-text-2); }
+
+body.landing .navbar-item.searchbar,
+body.landing .search-toggle-btn { display: none; }
+
+.main-nav--free-trial a.is-primary {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: var(--nds-radius-pill);
+  background: var(--nds-orange);
+  color: var(--nds-burgundy);
+  font-weight: 700;
+  font-size: 14px;
+  border: 0;
+  text-decoration: none;
+}
+.main-nav--free-trial a.is-primary:hover { filter: brightness(1.05); }
+
+.theme-switch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--nds-hair);
+  border-radius: var(--nds-radius-pill);
+  background: transparent;
+}
+
+.theme-switch-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--nds-radius-pill);
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--nds-text-2);
+  cursor: pointer;
+}
+
+.theme-switch-btn[aria-pressed="true"],
+.theme-switch-btn.is-active {
+  background: var(--nds-selected-bg);
+  color: var(--nds-selected-fg);
+}
+
+.navbar-brand .nds-theme-item--compact { display: none; }
+
+@media screen and (max-width: 1023.5px) {
+  .navbar-menu .nds-theme-item { display: none; }
+
+  .navbar-brand .nds-theme-item--compact {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .nds-theme-item--compact .theme-switch-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nds-theme-item--compact .theme-switch-btn[data-theme-value="system"] { display: none; }
+
+  .navbar-menu .nds-theme-item { display: flex; }
+
+  .navbar-brand > .navbar-item {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .navbar .search-toggle-btn {
+    padding: 4px;
+    margin-right: 0;
+  }
+
+  .navbar-brand .navbar-burger { width: 40px; }
+
+  .navbar-brand .navbar-item.nds-brand { gap: 8px; }
+}
+
+footer.footer {
+  background: var(--nds-footer-bg);
+  color: var(--nds-footer-fg);
+}
+
+footer.nds-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 28px;
+  padding: 28px 32px;
+  font-family: var(--nds-font);
+  font-size: calc(13 / var(--rem-base) * 1rem);
+}
+
+footer.nds-footer .nds-footer__logo {
+  display: inline-flex;
+  color: var(--nds-footer-strong);
+}
+
+footer.nds-footer .nds-logo {
+  width: auto;
+  height: 20px;
+}
+
+footer.nds-footer .nds-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-left: auto;
+  font-weight: 700;
+}
+
+footer.nds-footer .nds-footer__nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+footer.nds-footer .nds-footer__nav a:hover,
+footer.nds-footer .nds-footer__nav a:focus-visible {
+  color: var(--nds-footer-strong);
+  text-decoration: underline;
+}
+
+html,
+body { min-height: 100%; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body > .body,
+body > main,
+body > .error-page { flex: 1 0 auto; }
+
+html {
+  scrollbar-gutter: stable;
+  /* Upstream base.css sets scrollbar-color on html; Chrome then ignores ::-webkit-scrollbar. */
+  scrollbar-color: auto;
+  scrollbar-width: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Track ends under the 68px header and above the footer (--nds-sb-footer, js/15-scrollbar-footer.js). */
+html::-webkit-scrollbar {
+  width: 15px;
+  height: 10px;
+  background:
+    linear-gradient(var(--nds-header-bg), var(--nds-header-bg)) top / 100% 68px no-repeat,
+    linear-gradient(var(--nds-footer-bg), var(--nds-footer-bg)) bottom / 100% var(--nds-sb-footer, 0) no-repeat,
+    var(--nds-scrollbar-track);
+}
+
+html::-webkit-scrollbar-track {
+  margin-top: 68px;
+  margin-bottom: var(--nds-sb-footer, 0);
+  background: var(--nds-scrollbar-track);
+}
+
+/* Square thumbs: upstream base.css rounds them. */
+html::-webkit-scrollbar-thumb {
+  background: var(--nds-scrollbar-thumb);
+  border: 1px solid #000;
+  border-radius: 0;
+  background-clip: border-box;
+}
+
+body ::-webkit-scrollbar {
+  height: 0.25rem;
+  width: 0.25rem;
+}
+
+body ::-webkit-scrollbar-thumb {
+  border: 0;
+  border-radius: 0;
+  background-clip: border-box;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+html::-webkit-scrollbar-thumb:active {
+  background: var(--nds-orange);
+  border-color: var(--nds-orange);
+}
+
+html::-webkit-scrollbar-corner {
+  background: var(--nds-scrollbar-track);
+}
+
+/* menu.svg/back.svg are dark artwork: use them as masks in the text color. */
+.toolbar .nav-toggle {
+  background: var(--nds-text);
+  -webkit-mask: url(../img/menu.svg) no-repeat 50% 47.5% / 49%;
+  mask: url(../img/menu.svg) no-repeat 50% 47.5% / 49%;
+}
+
+.toolbar .nav-toggle.is-active {
+  background: var(--nds-text);
+  -webkit-mask: url(../img/back.svg) no-repeat 50% 47.5% / 41.5%;
+  mask: url(../img/back.svg) no-repeat 50% 47.5% / 41.5%;
+}
+
+@media screen and (max-width: 380px) {
+  .navbar-brand .nds-theme-item--compact { display: none; }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1279.5px) {
+  .navbar-end .navbar-item {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .navbar-item.searchbar input#searchbar {
+    width: 130px;
+  }
+
+  .navbar-brand .nds-sublogo {
+    font-size: 17px;
+    padding: 6px 12px;
+  }
+}

@@ -1,0 +1,241 @@
+/* html:root, not :root or html: postcss-custom-properties inlines vars from those
+   at build time, which would freeze light mode. */
+html:root {
+  --nds-burgundy: #38112a;
+  --nds-orange: #ff9e33;
+  --nds-purple: #b296ff;
+  --nds-muted: #9c8ca6;
+  --nds-deep-burgundy: #1f0a18;
+  --nds-radius-box: 12px;
+  --nds-radius-tag: 6px;
+  --nds-radius-pill: 999px;
+  --nds-font: arial, helvetica, sans-serif;
+  --nds-font-mono: ui-monospace, sfmono-regular, menlo, consolas, "Liberation Mono", monospace;
+  --nds-bg: #fff;
+  --nds-surface: #fff;
+  --nds-surface-border: rgba(56, 17, 42, 0.14);
+  --nds-panel: #f7f4ff;
+  --nds-panel-soft: rgba(252, 251, 255, 0.72);
+  --nds-panel-soft-border: rgba(56, 17, 42, 0.1);
+  --nds-hair: rgba(56, 17, 42, 0.14);
+  --nds-text: #38112a;
+  --nds-text-2: #6e5774;
+  --nds-heading: #38112a;
+  --nds-link: #38112a;
+  --nds-link-underline: #e0861e;
+  --nds-doc-link: #5128bf;
+  --nds-header-bg: #fff;
+  --nds-header-fg: #38112a;
+  --nds-sidebar-bg: #f7f4ff;
+  --nds-footer-bg: #38112a;
+  --nds-footer-fg: #c9b2c2;
+  --nds-footer-strong: #fff;
+  --nds-input-bg: #fff;
+  --nds-input-border: rgba(56, 17, 42, 0.22);
+  --nds-selected-bg: #38112a;
+  --nds-selected-fg: #fff;
+  --nds-selected-bg-hover: #6e5774;
+  --nds-pill-bg: #fff;
+  --nds-pill-bg-hover: #ede6ff;
+  --nds-btn-hover-tint: #ede6ff;
+  --nds-nav-active: #38112a;
+  --nds-nav-active-bg: #ede6ff;
+  --nds-btn-primary-bg: #ff9e33;
+  --nds-btn-primary-fg: #38112a;
+  --nds-btn-outline: #38112a;
+  --nds-tag-primary-bg: #b296ff;
+  --nds-tag-primary-fg: #38112a;
+  --nds-tag-secondary-bg: #e1d6ff;
+  --nds-tag-secondary-fg: #38112a;
+  --nds-glow: rgba(178, 150, 255, 0.37);
+  --nds-code-bg: #f7f4ff;
+  --nds-kbd-bg: #fff;
+  --nds-syn-keyword: #38112a;
+  --nds-syn-string: #6e5774;
+  --nds-syn-comment: #9c8ca6;
+  --nds-syn-number: #88707f;
+  --nds-th-bg: #38112a;
+  --nds-th-fg: #fff;
+  --nds-row-1: #fff;
+  --nds-row-2: #f7f4ff;
+  --nds-tab: #f7f4ff;
+  --nds-tab-on: #ede6ff;
+  --nds-tab-body: #fcfbff;
+  --nds-step-bg: #38112a;
+  --nds-step-fg: #fff;
+  --nds-adm-icon: #38112a;
+  --nds-adm-icon-warn: #38112a;
+  --nds-adm-note: #f7f4ff;
+  --nds-adm-tip: #ede6ff;
+  --nds-adm-important: #f7f4ff;
+  --nds-adm-warning: #fff5eb;
+  --nds-adm-caution: #ffe2c2;
+  --nds-scrollbar-track: #e8e9ed;
+  --nds-scrollbar-thumb: #38112a;
+  --nds-naia-ring: #e1d6ff;
+  --nds-naia-glint: #b296ff;
+  --nds-backdrop: rgba(31, 10, 24, 0.55);
+}
+
+html[data-theme^="dark"] {
+  color-scheme: dark;
+
+  --nds-bg: #38112a;
+  --nds-surface: #43203a;
+  --nds-surface-border: rgba(255, 255, 255, 0.1);
+  --nds-panel: #43203a;
+  --nds-panel-soft: #43203a;
+  --nds-panel-soft-border: transparent;
+  --nds-hair: rgba(255, 255, 255, 0.14);
+  --nds-text: #fff;
+  --nds-text-2: #c9b2c2;
+  --nds-heading: #fff;
+  --nds-link: #e1d6ff;
+  --nds-link-underline: #b296ff;
+  --nds-doc-link: #b296ff;
+  --nds-header-bg: #38112a;
+  --nds-header-fg: #fff;
+  --nds-sidebar-bg: #38112a;
+  --nds-footer-bg: #2b0c20;
+  --nds-footer-fg: #c9b2c2;
+  --nds-input-bg: rgba(255, 255, 255, 0.07);
+  --nds-input-border: rgba(255, 255, 255, 0.22);
+  --nds-selected-bg: #e1d6ff;
+  --nds-selected-fg: #38112a;
+  --nds-selected-bg-hover: #b296ff;
+  --nds-pill-bg: rgba(255, 255, 255, 0.08);
+  --nds-pill-bg-hover: rgba(255, 255, 255, 0.18);
+  --nds-btn-hover-tint: rgba(255, 255, 255, 0.12);
+  --nds-nav-active: #ff9e33;
+  --nds-nav-active-bg: rgba(255, 255, 255, 0.06);
+  --nds-btn-outline: #fff;
+  --nds-tag-secondary-bg: #fff;
+  --nds-tag-secondary-fg: #38112a;
+  --nds-glow: rgba(255, 158, 51, 0.45);
+  --nds-code-bg: #2b0c20;
+  --nds-kbd-bg: rgba(255, 255, 255, 0.06);
+  --nds-syn-keyword: #ff9e33;
+  --nds-syn-string: #d1c0ff;
+  --nds-syn-comment: #9c8ca6;
+  --nds-syn-number: #ffc585;
+  --nds-th-bg: #43203a;
+  --nds-th-fg: #fff;
+  --nds-row-1: rgba(255, 255, 255, 0.03);
+  --nds-row-2: rgba(255, 255, 255, 0.075);
+  --nds-tab: rgba(255, 255, 255, 0.05);
+  --nds-tab-on: rgba(225, 214, 255, 0.16);
+  --nds-tab-body: rgba(255, 255, 255, 0.035);
+  --nds-step-bg: #e1d6ff;
+  --nds-step-fg: #38112a;
+  --nds-adm-icon: #fff;
+  --nds-adm-icon-warn: #ff9e33;
+  --nds-adm-note: rgba(255, 255, 255, 0.06);
+  --nds-adm-tip: rgba(178, 150, 255, 0.14);
+  --nds-adm-important: rgba(225, 214, 255, 0.06);
+  --nds-adm-warning: rgba(255, 158, 51, 0.1);
+  --nds-adm-caution: rgba(255, 158, 51, 0.2);
+  --nds-naia-ring: rgba(225, 214, 255, 0.16);
+  --nds-naia-glint: rgba(178, 150, 255, 0.85);
+  --nds-backdrop: rgba(8, 2, 6, 0.82);
+}
+
+html[data-theme^="dark"] body.article {
+  --nds-bg: var(--nds-deep-burgundy);
+  --nds-surface: #38112a;
+  --nds-surface-border: rgba(255, 255, 255, 0.08);
+  --nds-panel: #38112a;
+  --nds-hair: rgba(255, 255, 255, 0.12);
+  --nds-text: #f7f2f5;
+  --nds-heading: #f7f2f5;
+  --nds-header-bg: #38112a;
+  --nds-sidebar-bg: #38112a;
+  --nds-footer-bg: #140611;
+  --nds-code-bg: #140611;
+  --nds-th-bg: #38112a;
+  --nds-adm-important: rgba(225, 214, 255, 0.06);
+}
+
+/* Point the --dark-* variables used by dark-mode.css at the tokens; also on body so the
+   body.article overrides reach them. */
+html[data-theme^="dark"],
+html[data-theme^="dark"] body {
+  --dark-page-bg: var(--nds-bg);
+  --dark-panel-bg: var(--nds-surface);
+  --dark-nav-bg: var(--nds-sidebar-bg);
+  --dark-code-bg: var(--nds-code-bg);
+  --dark-footer-bg: var(--nds-footer-bg);
+  --dark-body-text: var(--nds-text);
+  --dark-muted-text: var(--nds-text-2);
+  --dark-heading-text: var(--nds-heading);
+  --dark-link-text: var(--nds-link);
+  --dark-accent: var(--nds-orange);
+  --dark-border: var(--nds-hair);
+  --dark-heading-rule: var(--nds-hair);
+  --dark-heading-rule-width: 1px;
+}
+
+body {
+  background: var(--nds-bg);
+  color: var(--nds-text);
+  font-family: var(--nds-font);
+}
+
+:focus-visible {
+  outline: 2px solid var(--nds-orange);
+  outline-offset: 2px;
+}
+
+.nds-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nds-text);
+}
+
+.nds-eyebrow::before {
+  content: "< ";
+  color: var(--nds-orange);
+}
+
+.nds-eyebrow::after {
+  content: " />";
+  color: var(--nds-orange);
+}
+
+.nds-payoff {
+  font-style: normal;
+  color: var(--nds-orange);
+}
+
+.nds-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: var(--nds-radius-tag);
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--nds-tag-primary-bg);
+  color: var(--nds-tag-primary-fg);
+}
+
+.nds-tag--secondary {
+  background: var(--nds-tag-secondary-bg);
+  color: var(--nds-tag-secondary-fg);
+}
+
+.nds-glow {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--nds-glow), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

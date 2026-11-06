@@ -1,0 +1,344 @@
+.nds-landing {
+  position: relative;
+  overflow: hidden;
+}
+
+.nds-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 72px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 48px 40px;
+}
+
+.nds-hero__glow {
+  width: 760px;
+  height: 760px;
+  right: -220px;
+  top: -280px;
+}
+
+.nds-hero__main,
+.nds-start {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.nds-hero__title {
+  font-size: 48px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  margin: 14px 0 12px;
+  color: var(--nds-heading);
+  text-wrap: balance;
+}
+
+.nds-hero__subtitle {
+  font-size: 18px;
+  color: var(--nds-text-2);
+  margin: 0 0 22px;
+  max-width: 56ch;
+}
+
+.nds-hero__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  max-width: 620px;
+  padding: 0 20px;
+  border-radius: var(--nds-radius-pill);
+  background: var(--nds-input-bg);
+  border: 1px solid var(--nds-input-border);
+  color: var(--nds-text-2);
+}
+
+.nds-hero__search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: 17px var(--nds-font);
+  color: var(--nds-text);
+  outline: none;
+}
+
+.nds-hero__search kbd {
+  font: 12px var(--nds-font);
+  border: 1px solid var(--nds-input-border);
+  border-radius: var(--nds-radius-tag);
+  padding: 0 6px;
+}
+
+.nds-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nds-start {
+  display: grid;
+  gap: 0;
+  grid-template-rows: auto;
+  grid-auto-rows: 1fr;
+  padding: 20px;
+  border-radius: var(--nds-radius-box);
+  background: var(--nds-panel-soft);
+  border: 1px solid var(--nds-panel-soft-border);
+}
+.nds-start .nds-eyebrow { margin-bottom: 8px; }
+
+.nds-start__item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: var(--nds-radius-tag);
+  color: var(--nds-text);
+  text-decoration: none;
+  transition: background-color 0.15s ease-out;
+}
+.nds-start__item + .nds-start__item { border-top: 1px solid var(--nds-hair); }
+.nds-start__item .nds-icon { color: var(--nds-orange); }
+
+.nds-start__item > span {
+  display: grid;
+  gap: 6px;
+}
+
+.nds-start__item small {
+  color: var(--nds-text-2);
+  font-size: 13px;
+}
+
+a.nds-start__item:hover,
+a.nds-start__item:focus-visible {
+  background: var(--nds-nav-active-bg);
+  color: var(--nds-text);
+  text-decoration: none;
+}
+
+.nds-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* The AsciiDoc H1 is hidden: the hero carries the title. */
+body.landing .doc > h1.page,
+body.landing .nds-catalog > h1 { display: none; }
+
+.nds-catalog {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px 56px;
+}
+
+.landing-wrap {
+  display: grid;
+  gap: 14px;
+}
+
+.persona-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.persona-label {
+  margin: 0 4px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--nds-text-2);
+}
+
+.persona-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.persona-item {
+  height: 36px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--nds-radius-tag);
+  border: 1px solid var(--nds-hair);
+  background: transparent;
+  color: var(--nds-text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.persona-item .persona-name {
+  font-weight: 400;
+  color: inherit;
+}
+.persona-item .persona-sub { display: none; }
+
+.persona-item.is-active {
+  background: var(--nds-selected-bg);
+  border-color: var(--nds-selected-bg);
+  color: var(--nds-selected-fg);
+}
+
+.persona-item.is-active .persona-name {
+  font-weight: 700;
+  color: inherit;
+}
+
+.editions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.edition-card {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) 400px;
+  gap: 20px;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--nds-panel);
+  border: 1px solid var(--nds-surface-border);
+  border-radius: var(--nds-radius-box);
+  box-shadow: none;
+}
+.edition-card:hover { border-color: var(--nds-hair); }
+
+.edition-card.is-dimmed {
+  opacity: 0.35;
+  pointer-events: none;
+  user-select: none;
+}
+
+.edition-head {
+  display: grid;
+  gap: 6px;
+}
+
+.edition-name {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--nds-heading);
+}
+
+.edition-tags {
+  display: flex;
+  gap: 6px;
+}
+
+.edition-desc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--nds-text-2);
+}
+
+.edition-badge {
+  display: none;
+}
+
+.edition-versions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+a.version-pill {
+  height: 26px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--nds-radius-tag);
+  border: 1px solid var(--nds-hair);
+  background: var(--nds-pill-bg);
+  color: var(--nds-text);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+a.version-pill:hover,
+a.version-pill:focus-visible {
+  background: var(--nds-pill-bg-hover);
+}
+
+a.version-pill.pill-latest {
+  background: var(--nds-selected-bg);
+  border-color: var(--nds-selected-bg);
+  color: var(--nds-selected-fg);
+}
+
+a.version-pill.pill-latest:hover,
+a.version-pill.pill-latest:focus-visible {
+  background: var(--nds-selected-bg-hover);
+  border-color: var(--nds-selected-bg-hover);
+}
+
+.landing-featured { display: none; }
+
+@media (max-width: 1100px) {
+  .nds-hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 32px 24px;
+  }
+  .nds-catalog { padding: 0 24px 40px; }
+
+  .edition-card {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .nds-hero__title { font-size: 38px; }
+}
+
+/* Hero search reuses #searchbar and .search-submit-btn; undo the header sizing from search-neptune.css. */
+.nds-hero__search input#searchbar,
+.nds-hero__search input#searchbar:focus {
+  width: auto;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--nds-text);
+}
+
+.nds-hero__search .algolia-autocomplete {
+  flex: 1;
+  min-width: 0;
+}
+
+.nds-hero__search .algolia-autocomplete input#searchbar {
+  width: 100%;
+}
+
+.nds-hero__search input#searchbar::placeholder { color: var(--nds-text-2); }
+
+/* margin-left: auto keeps the arrow at the end while the search modal borrows .algolia-autocomplete. */
+.nds-hero__search .search-submit-btn {
+  margin-left: auto;
+  position: static;
+  transform: none;
+  color: var(--nds-text);
+}
