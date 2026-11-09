@@ -22,6 +22,10 @@
   const pageKeywords = '{{page.attributes.keywords}}';
   const pageFunctionalKeywords = '{{page.attributes.[functional-keywords]}}';
   const evalRules = [];
+  // site.keys.legacy is set by the legacy docs playbooks: each site ranks its own pages (tags:legacy or not) first.
+  const isLegacySite = {{#if site.keys.legacy}}true{{else}}false{{/if}};
+  // Naia answers from the current docs, so it stays off on the legacy site.
+  const naiaEnabled = !isLegacySite;
 
   if (currentComponent && currentVersion) {
     evalRules.push(`(component:=${currentComponent} && version:=${currentVersion}):12`);
@@ -29,9 +33,13 @@
   if (currentComponent) evalRules.push(`(component:=${currentComponent}):9`);
   if (currentVersion) evalRules.push(`(version:=${currentVersion}):3`);
 
-  const sortBy = evalRules.length > 0
-    ? `_eval([ ${evalRules.join(', ')} ]):desc,version_sort:desc`
-    : 'version_sort:desc';
+  // Typesense allows one _eval and scores each record by the first rule it matches, so the site rule
+  // is folded in: this site's pages with the context rules, this site's pages, then the rest.
+  const siteCond = isLegacySite ? 'tags:=legacy' : 'tags:!=legacy';
+  const siteRules = evalRules.map((rule) => rule
+    .replace(/^\((.*)\):(\d+)$/, (m, cond, score) => `(${siteCond} && ${cond}):${Number(score) + 12}`));
+  siteRules.push(`(${siteCond}):13`);
+  const sortBy = `_eval([ ${siteRules.concat(evalRules).join(', ')} ]):desc,version_sort:desc`;
 
   const searchParams = {
     sort_by: sortBy,
@@ -406,8 +414,10 @@
   const naiaBodyObserver = new MutationObserver(function() {
     const dropdown = document.querySelector('.algolia-autocomplete .ds-dropdown-menu');
     if (!dropdown) return;
-    ensureNaiaSection(dropdown);
-    ensureAskNaiaPanel(dropdown);
+    if (naiaEnabled) {
+      ensureNaiaSection(dropdown);
+      ensureAskNaiaPanel(dropdown);
+    }
     ensureTsExpandBtn(dropdown);
     interceptDropdownClose(dropdown);
   });
@@ -649,7 +659,7 @@
         // Mode buttons: docs (Typesense) and Naia.
         '<div id="search-modal-tabs" role="tablist">' +
           '<button class="search-tab-btn active" data-tab="docs" role="tab" title="Search the docs" aria-label="Search the docs"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>' +
-          '<button class="search-tab-btn naia-tab-btn" data-tab="ai" role="tab" title="Ask Naia" aria-label="Ask Naia"><img class="naia-tab-icon" src="https://portal.neptune-software.com/media/root/NAIA/Naia_Identifier%201.svg" alt=""></button>' +
+          (naiaEnabled ? '<button class="search-tab-btn naia-tab-btn" data-tab="ai" role="tab" title="Ask Naia" aria-label="Ask Naia"><img class="naia-tab-icon" src="https://portal.neptune-software.com/media/root/NAIA/Naia_Identifier%201.svg" alt=""></button>' : '') +
         '</div>' +
       '</div>' +
       '<div id="search-modal-results-container" class="tab-docs"></div>' +
